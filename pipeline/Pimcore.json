@@ -174,7 +174,7 @@
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
-						"requestBody": "{\"query\":\"  query{ getProduktListing(first: 50, after: 150){\\r\\n      totalCount\\r\\n\\r\\n    \\r\\n  }\\r\\n}\",\"variables\":{}}",
+						"requestBody": "{\"query\":\"  query{ getProduktListing(first: 1, after: 0){\\r\\n      totalCount\\r\\n\\r\\n    \\r\\n  }\\r\\n}\",\"variables\":{}}",
 						"paginationRules": {
 							"supportRFC5988": "true"
 						}

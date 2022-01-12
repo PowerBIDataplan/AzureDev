@@ -1,0 +1,9 @@
+{
+	"name": "WilmaDeveloper",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "85038705-fd3a-4cf8-8478-5a78308c60b9",
+		"tenantId": "bc326283-7f8b-44dc-9cfd-25f8c2c765ee"
+	}
+}

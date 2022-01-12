@@ -5,7 +5,14 @@
 			{
 				"name": "Products",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "SetTotalPages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -148,8 +155,112 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "GetPimcoreTotalCount",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": "{\"query\":\"  query{ getProduktListing(first: 50, after: 150){\\r\\n      totalCount\\r\\n\\r\\n    \\r\\n  }\\r\\n}\",\"variables\":{}}",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['data']['getProduktListing']['totalCount']"
+								},
+								"sink": {
+									"name": "TotalCount",
+									"type": "Int32"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "PimcoreRest",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "PagesPimcore",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "PimcorePages",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "GetPimcoreTotalCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "SetTotalPages",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "PimcorePages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Pages",
+					"value": ""
+				}
 			}
 		],
+		"variables": {
+			"Pages": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

@@ -1,20 +1,32 @@
 {
-	"name": "Pimcore",
+	"name": "PimcorePages",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "PimcoreRest",
+						"referenceName": "PagesPimcore",
 						"type": "DatasetReference"
 					},
-					"name": "Pimcore"
+					"name": "PimcorePages"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'POST',\n\tbody: '\\'{\"query\":\"  query{ getProduktListing(first: 50, after: 150){\\r\\n      totalCount edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}\\'',\n\ttimeout: 30,\n\tpaginationRules: ['supportRFC5988' -> 'true'],\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> Pimcore"
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PagesPimcore",
+						"type": "DatasetReference"
+					},
+					"name": "sinkPimcorePages"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddColumns"
+				}
+			],
+			"script": "source(output(\n\t\tTableName as string,\n\t\tTotalCount as integer,\n\t\tTotalPages as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> PimcorePages\nPimcorePages derive(TableName = 'ExtraTest',\n\t\tTotalPages = round(divide(TotalCount, 5000), 0,1) ) ~> AddColumns\nAddColumns sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tTableName as string,\n\t\tTotalCount as integer,\n\t\tTotalPages as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tpreSQLs:['DELETE * FROM [dbo].[Pages] WHERE TableName LIKE \\'ExtraTest\\';'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tTableName,\n\t\tTotalCount,\n\t\tTotalPages\n\t)) ~> sinkPimcorePages"
 		}
 	}
 }

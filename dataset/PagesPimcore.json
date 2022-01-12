@@ -1,0 +1,31 @@
+{
+	"name": "PagesPimcore",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ExtraLeker",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TableName",
+				"type": "varchar"
+			},
+			{
+				"name": "TotalCount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TotalPages",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Pages"
+		}
+	}
+}

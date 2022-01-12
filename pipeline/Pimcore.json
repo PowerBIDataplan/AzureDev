@@ -3,163 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Products",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "SetTotalPages",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
-						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "POST",
-						"requestBody": {
-							"value": "@concat('{\"query\":\"  query{ getProduktListing(first: ',variables('Page'), ', after: 150){\\r\\n       edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}')",
-							"type": "Expression"
-						},
-						"paginationRules": {
-							"supportRFC5988": "true"
-						}
-					},
-					"sink": {
-						"type": "AzureSqlSink"
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"path": "['node']['id']"
-								},
-								"sink": {
-									"name": "PimcoreID",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemSKU']"
-								},
-								"sink": {
-									"name": "ItemSKU",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemName']"
-								},
-								"sink": {
-									"name": "Description",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemSalePrice']"
-								},
-								"sink": {
-									"name": "ItemSalePrice",
-									"type": "Double"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['modificationDate']"
-								},
-								"sink": {
-									"name": "PIMmodificationDate",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemOfferPrice']"
-								},
-								"sink": {
-									"name": "ItemOfferPrice",
-									"type": "Double"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemVAT']"
-								},
-								"sink": {
-									"name": "ItemVAT",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemCostPrice']"
-								},
-								"sink": {
-									"name": "ItemCostPrice",
-									"type": "Double"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['EnableWebshop']"
-								},
-								"sink": {
-									"name": "EnableWebShop",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemBarcodePrimary']"
-								},
-								"sink": {
-									"name": "PrimaryBarcode",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['node']['ItemBarcodes']"
-								},
-								"sink": {
-									"name": "SecondaryBarcode",
-									"type": "String"
-								}
-							}
-						],
-						"collectionReference": "$['data']['getProduktListing']['edges']",
-						"mapComplexValuesToString": true
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "PimcoreRest",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ExtraTest",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "GetPimcoreTotalCount",
 				"type": "Copy",
 				"dependsOn": [],
@@ -260,7 +103,7 @@
 				"typeProperties": {
 					"variableName": "Pages",
 					"value": {
-						"value": "@string(activity('LookTotalPages').output.firstRow.TotalPages)",
+						"value": "@string(activity('LookTotalPages').output.firstRow.TotalCount)",
 						"type": "Expression"
 					}
 				}
@@ -296,6 +139,218 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "SetTotalPages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(int(variables('currentPage')),int(variables('Pages')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Products",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "POST",
+									"requestBody": {
+										"value": "@concat('{\"query\":\"  query{ getProduktListing(first: ',variables('Page'), ', after: ',variables('currentPage'),'){\\r\\n       edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}')",
+										"type": "Expression"
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['node']['id']"
+											},
+											"sink": {
+												"name": "PimcoreID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemSKU']"
+											},
+											"sink": {
+												"name": "ItemSKU",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemName']"
+											},
+											"sink": {
+												"name": "Description",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemSalePrice']"
+											},
+											"sink": {
+												"name": "ItemSalePrice",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['modificationDate']"
+											},
+											"sink": {
+												"name": "PIMmodificationDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemOfferPrice']"
+											},
+											"sink": {
+												"name": "ItemOfferPrice",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemVAT']"
+											},
+											"sink": {
+												"name": "ItemVAT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemCostPrice']"
+											},
+											"sink": {
+												"name": "ItemCostPrice",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['EnableWebshop']"
+											},
+											"sink": {
+												"name": "EnableWebShop",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemBarcodePrimary']"
+											},
+											"sink": {
+												"name": "PrimaryBarcode",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['node']['ItemBarcodes']"
+											},
+											"sink": {
+												"name": "SecondaryBarcode",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['data']['getProduktListing']['edges']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "PimcoreRest",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ExtraTest",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Add 5000-Help",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Products",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Help",
+								"value": {
+									"value": "@string(add(int(variables('currentPage')),5000))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add 5000 - CurrentPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Add 5000-Help",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "currentPage",
+								"value": {
+									"value": "@variables('Help')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
 			}
 		],
 		"variables": {
@@ -305,6 +360,14 @@
 			"Page": {
 				"type": "String",
 				"defaultValue": "5000"
+			},
+			"currentPage": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"Help": {
+				"type": "String",
+				"defaultValue": "0"
 			}
 		},
 		"annotations": []

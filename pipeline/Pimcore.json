@@ -27,7 +27,10 @@
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
-						"requestBody": "{\"query\":\"  query{ getProduktListing(first: 50, after: 150){\\r\\n       edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}",
+						"requestBody": {
+							"value": "@concat('{\"query\":\"  query{ getProduktListing(first: ',variables('Page'), ', after: 150){\\r\\n       edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}')",
+							"type": "Expression"
+						},
 						"paginationRules": {
 							"supportRFC5988": "true"
 						}
@@ -257,7 +260,7 @@
 				"typeProperties": {
 					"variableName": "Pages",
 					"value": {
-						"value": "@string(activity('LookTotalPages').output)",
+						"value": "@string(activity('LookTotalPages').output.firstRow.TotalPages)",
 						"type": "Expression"
 					}
 				}
@@ -298,6 +301,10 @@
 		"variables": {
 			"Pages": {
 				"type": "String"
+			},
+			"Page": {
+				"type": "String",
+				"defaultValue": "5000"
 			}
 		},
 		"annotations": []

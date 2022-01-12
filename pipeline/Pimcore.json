@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "SetTotalPages",
+						"activity": "PimcorePages",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -240,23 +240,6 @@
 						"computeType": "General"
 					},
 					"traceLevel": "Fine"
-				}
-			},
-			{
-				"name": "SetTotalPages",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "PimcorePages",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "Pages",
-					"value": ""
 				}
 			}
 		],

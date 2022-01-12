@@ -1,0 +1,12 @@
+{
+	"name": "Pimcore",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

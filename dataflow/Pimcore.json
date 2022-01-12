@@ -1,0 +1,20 @@
+{
+	"name": "Pimcore",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "PimcoreRest",
+						"type": "DatasetReference"
+					},
+					"name": "Pimcore"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'POST',\n\tbody: '\\'{\"query\":\"  query{ getProduktListing(first: 50, after: 150){\\r\\n      totalCount edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}\\'',\n\ttimeout: 30,\n\tpaginationRules: ['supportRFC5988' -> 'true'],\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> Pimcore"
+		}
+	}
+}

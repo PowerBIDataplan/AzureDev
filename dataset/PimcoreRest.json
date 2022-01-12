@@ -1,0 +1,12 @@
+{
+	"name": "PimcoreRest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "PimcoreRest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}

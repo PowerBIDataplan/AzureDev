@@ -1,0 +1,17 @@
+{
+	"name": "PimcoreJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Pimcore",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {}
+	}
+}

@@ -1,0 +1,74 @@
+{
+	"name": "ExtraTest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ExtraLeker",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ItemSKU",
+				"type": "varchar"
+			},
+			{
+				"name": "PimcoreID",
+				"type": "varchar"
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "ItemOfferPrice",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ItemVAT",
+				"type": "varchar"
+			},
+			{
+				"name": "ItemCostPrice",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ItemSalePrice",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "EnableWebShop",
+				"type": "varchar"
+			},
+			{
+				"name": "PrimaryBarcode",
+				"type": "varchar"
+			},
+			{
+				"name": "SecondaryBarcode",
+				"type": "varchar"
+			},
+			{
+				"name": "VismaModificationDate",
+				"type": "varchar"
+			},
+			{
+				"name": "PIMmodificationDate",
+				"type": "varchar"
+			},
+			{
+				"name": "UpdateDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ExtraTest"
+		}
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"name": "PimcoreDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ExtraLeker",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ItemSKU",
+				"type": "varchar"
+			},
+			{
+				"name": "Cost",
+				"type": "varchar"
+			},
+			{
+				"name": "BarCodePrincipal",
+				"type": "varchar"
+			},
+			{
+				"name": "BarCodeSecondary",
+				"type": "varchar"
+			},
+			{
+				"name": "BarCodePrin_Update",
+				"type": "varchar"
+			},
+			{
+				"name": "BarCodeSec_Update",
+				"type": "varchar"
+			},
+			{
+				"name": "Supplier",
+				"type": "varchar"
+			},
+			{
+				"name": "Updated",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Pimcore"
+		}
+	}
+}

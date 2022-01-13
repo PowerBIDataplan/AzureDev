@@ -256,15 +256,6 @@
 										},
 										{
 											"source": {
-												"path": "['node']['ItemCostPrice']"
-											},
-											"sink": {
-												"name": "ItemCostPrice",
-												"type": "Double"
-											}
-										},
-										{
-											"source": {
 												"path": "['node']['EnableWebshop']"
 											},
 											"sink": {

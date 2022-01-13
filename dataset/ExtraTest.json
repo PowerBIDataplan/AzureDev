@@ -12,11 +12,11 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "ItemSKU",
+				"name": "PimcoreID",
 				"type": "varchar"
 			},
 			{
-				"name": "PimcoreID",
+				"name": "ItemSKU",
 				"type": "varchar"
 			},
 			{
@@ -67,6 +67,10 @@
 				"type": "datetime",
 				"precision": 23,
 				"scale": 3
+			},
+			{
+				"name": "ItemInStock",
+				"type": "varchar"
 			}
 		],
 		"typeProperties": {

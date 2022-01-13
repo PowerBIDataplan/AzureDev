@@ -5,6 +5,9 @@
 			"referenceName": "PimcoreRest",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Pimcore"
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"schema": []

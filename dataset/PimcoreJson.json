@@ -5,6 +5,9 @@
 			"referenceName": "Pimcore",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Pimcore"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {

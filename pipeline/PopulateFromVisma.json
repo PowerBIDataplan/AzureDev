@@ -141,20 +141,20 @@
 										},
 										{
 											"source": {
+												"path": "$['lastCost']"
+											},
+											"sink": {
+												"name": "DefaultPrice",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
 												"path": "$['description']"
 											},
 											"sink": {
 												"name": "Description",
 												"type": "String"
-											}
-										},
-										{
-											"source": {
-												"path": "$['defaultPrice']"
-											},
-											"sink": {
-												"name": "DefaultPrice",
-												"type": "Double"
 											}
 										},
 										{

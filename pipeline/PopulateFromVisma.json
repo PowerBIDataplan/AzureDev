@@ -132,7 +132,7 @@
 									"mappings": [
 										{
 											"source": {
-												"path": "$['inventoryId']"
+												"path": "$['inventoryNumber']"
 											},
 											"sink": {
 												"name": "ItemSKU",
@@ -159,7 +159,7 @@
 										},
 										{
 											"source": {
-												"path": "$['warehouseDetails'][0]['lastModifiedDateTime']"
+												"path": "$['lastModifiedDateTime']"
 											},
 											"sink": {
 												"name": "modificationDate",

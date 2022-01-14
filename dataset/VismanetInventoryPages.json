@@ -5,6 +5,9 @@
 			"referenceName": "Vismanet",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "VismaNet"
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {

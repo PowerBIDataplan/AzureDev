@@ -5,6 +5,9 @@
 			"referenceName": "ExtraLeker",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Extra Leker DB"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
@@ -43,6 +46,10 @@
 			},
 			{
 				"name": "Updated",
+				"type": "varchar"
+			},
+			{
+				"name": "ItemInStock",
 				"type": "varchar"
 			}
 		],

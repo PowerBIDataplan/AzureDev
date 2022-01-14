@@ -1,0 +1,15 @@
+{
+	"name": "VismanetInventoryPages",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Vismanet",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "inventory?pageNumber=1&pageSize=1"
+		},
+		"schema": []
+	}
+}

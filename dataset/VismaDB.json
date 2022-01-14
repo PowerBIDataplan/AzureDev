@@ -1,0 +1,38 @@
+{
+	"name": "VismaDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ExtraLeker",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ItemSKU",
+				"type": "varchar"
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "DefaultPrice",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "modificationDate",
+				"type": "varchar"
+			},
+			{
+				"name": "IteminStock",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VismaExtraTest"
+		}
+	}
+}

@@ -1,0 +1,259 @@
+{
+	"name": "PopulateFromVisma",
+	"properties": {
+		"activities": [
+			{
+				"name": "VismaPages",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "VismaPages",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Lookup total pages",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "VismaPages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'VismaExtraTest';",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "PagesPimcore",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set TotalPages",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookup total pages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TotalPages",
+					"value": {
+						"value": "@string(activity('Lookup total pages').output.firstRow.TotalPages)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Set TotalPages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(int(variables('Page')), int(variables('TotalPages')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "VismaInventory",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"ipp-application-type": "Visma.net Financials",
+										"ipp-company-id": "3464226",
+										"Authorization": "Bearer c5b7d8ba-4cf8-4312-a520-6709738cae9c"
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['inventoryId']"
+											},
+											"sink": {
+												"name": "ItemSKU",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['description']"
+											},
+											"sink": {
+												"name": "Description",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['defaultPrice']"
+											},
+											"sink": {
+												"name": "DefaultPrice",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "$['warehouseDetails'][0]['lastModifiedDateTime']"
+											},
+											"sink": {
+												"name": "modificationDate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['stockItem']"
+											},
+											"sink": {
+												"name": "IteminStock",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "VismaInventory",
+									"type": "DatasetReference",
+									"parameters": {
+										"Page": {
+											"value": "@variables('Page')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VismaDB",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set variable Help",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "VismaInventory",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Help",
+								"value": {
+									"value": "@string(add(int(variables('Page')),1))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable Page",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set variable Help",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Page",
+								"value": {
+									"value": "@variables('Help')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			}
+		],
+		"variables": {
+			"TotalPages": {
+				"type": "String"
+			},
+			"Page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"Help": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

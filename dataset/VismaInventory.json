@@ -17,7 +17,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat('inventory?pageNumber=',dataset().Page,'&pageSize=1000')",
+				"value": "@concat('inventory?pageNumber=',dataset().Page,'&pageSize=5000')",
 				"type": "Expression"
 			}
 		},

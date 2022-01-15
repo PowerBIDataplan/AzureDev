@@ -111,8 +111,8 @@
 							"typeProperties": {
 								"source": {
 									"type": "RestSource",
-									"httpRequestTimeout": "00:05:00",
-									"requestInterval": "00.00:00:00.010",
+									"httpRequestTimeout": "00:03:00",
+									"requestInterval": "00.00:00:00.002",
 									"requestMethod": "GET",
 									"additionalHeaders": {
 										"ipp-application-type": "Visma.net Financials",

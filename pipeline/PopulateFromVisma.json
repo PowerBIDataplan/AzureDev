@@ -320,7 +320,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT *\n  FROM [dbo].[Pimcore]\n  WHERE itemSKU like '%1111'\n  AND ItemInStock IS NOT NULL",
+						"sqlReaderQuery": "SELECT *\n  FROM [dbo].[Pimcore]\n  WHERE ItemInStock IS NOT NULL",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -362,13 +362,13 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://extraleker.pimcore.uat.convert.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532",
+								"url": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532",
 								"method": "POST",
 								"headers": {
 									"Content-Type": "application/json"
 								},
 								"body": {
-									"value": "@concat('{\"query\":\"mutation {\\r\\n  updateProdukt(id:',item().ID,', input: {ItemInStock: ',item().ItemInStock,'}) {\\r\\n    success\\r\\n    message\\r\\n  }\\r\\n}\",\"variables\":{}}')",
+									"value": "@concat('{\"query\":\"mutation {\\r\\n  updateProdukt(id:',item().ID,', input: {ItemInStock: ',item().ItemInStock,') {\\r\\n    success\\r\\n    message\\r\\n  }\\r\\n}\",\"variables\":{}}')",
 									"type": "Expression"
 								}
 							}

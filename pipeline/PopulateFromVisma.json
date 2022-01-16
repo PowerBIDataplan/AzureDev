@@ -320,7 +320,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT *\n  FROM [dbo].[Pimcore]\n  WHERE ItemInStock IS NOT NULL",
+						"sqlReaderQuery": "SELECT *\n  FROM [dbo].[Pimcore]\n  WHERE ItemInStock IS NOT NULL\n  AND ID LIKE '%1111'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},

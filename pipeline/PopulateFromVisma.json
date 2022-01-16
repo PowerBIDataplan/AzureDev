@@ -368,7 +368,7 @@
 									"Content-Type": "application/json"
 								},
 								"body": {
-									"value": "@concat('{\"query\":\"mutation {\\r\\n  updateProdukt(id:',item().ID,', input: {ItemInStock:true) {\\r\\n    success\\r\\n    message\\r\\n  }\\r\\n}\",\"variables\":{}}')",
+									"value": "@concat('{\"query\":\"mutation {\\r\\n  updateProdukt(id:',item().ID,', input: {ItemInStock:true}) {\\r\\n    success\\r\\n    message\\r\\n  }\\r\\n}\",\"variables\":{}}')",
 									"type": "Expression"
 								}
 							}

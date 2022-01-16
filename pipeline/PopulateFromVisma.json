@@ -111,7 +111,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "RestSource",
-									"httpRequestTimeout": "00:05:00",
+									"httpRequestTimeout": "00:10:00",
 									"requestInterval": "00.00:00:00.002",
 									"requestMethod": "GET",
 									"additionalHeaders": {
@@ -236,6 +236,22 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Wait1",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Set variable Page",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 600
+							}
 						}
 					],
 					"timeout": "7.00:00:00"
@@ -248,7 +264,7 @@
 			},
 			"Page": {
 				"type": "String",
-				"defaultValue": "1"
+				"defaultValue": "5"
 			},
 			"Help": {
 				"type": "String"

@@ -264,7 +264,7 @@
 			},
 			"Page": {
 				"type": "String",
-				"defaultValue": "20"
+				"defaultValue": "27"
 			},
 			"Help": {
 				"type": "String"

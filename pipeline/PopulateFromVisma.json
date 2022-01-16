@@ -364,6 +364,9 @@
 							"typeProperties": {
 								"url": "https://extraleker.pimcore.uat.convert.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532",
 								"method": "POST",
+								"headers": {
+									"Content-Type": "application/json"
+								},
 								"body": {
 									"value": "@concat('{\"query\":\"mutation {\\r\\n  updateProdukt(id:',item().ID,', input: {ItemInStock: ',item().ItemInStock,'}) {\\r\\n    success\\r\\n    message\\r\\n  }\\r\\n}\",\"variables\":{}}')",
 									"type": "Expression"

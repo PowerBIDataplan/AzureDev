@@ -1,0 +1,32 @@
+{
+	"name": "Barcodes_copy1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "VismaDB",
+						"type": "DatasetReference"
+					},
+					"name": "ExtraTest"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "PimcoreDB",
+						"type": "DatasetReference"
+					},
+					"name": "sinkPimcore"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AlterRow"
+				}
+			],
+			"script": "source(output(\n\t\tItemSKU as string,\n\t\tDescription as string,\n\t\tDefaultPrice as double,\n\t\tmodificationDate as string,\n\t\tIteminStock as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExtraTest\nExtraTest alterRow(upsertIf(true())) ~> AlterRow\nAlterRow sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tID as integer,\n\t\tItemSKU as string,\n\t\tCost as string,\n\t\tBarCodePrincipal as string,\n\t\tBarCodeSecondary as string,\n\t\tBarCodePrin_Update as string,\n\t\tBarCodeSec_Update as string,\n\t\tSupplier as string,\n\t\tUpdated as string,\n\t\tItemInStock as string\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['ItemSKU'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tItemSKU,\n\t\tItemInStock = IteminStock\n\t)) ~> sinkPimcore"
+		}
+	}
+}

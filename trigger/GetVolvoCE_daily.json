@@ -15,12 +15,6 @@
 					"referenceName": "Codatahost",
 					"type": "PipelineReference"
 				}
-			},
-			{
-				"pipelineReference": {
-					"referenceName": "IPArsakerUpdate",
-					"type": "PipelineReference"
-				}
 			}
 		],
 		"type": "ScheduleTrigger",

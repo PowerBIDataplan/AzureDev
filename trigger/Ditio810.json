@@ -6,12 +6,6 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "API-Ditio",
-					"type": "PipelineReference"
-				}
-			},
-			{
-				"pipelineReference": {
 					"referenceName": "Caterpillar",
 					"type": "PipelineReference"
 				}

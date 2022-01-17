@@ -1,0 +1,16 @@
+{
+	"name": "RestUserLegacy",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DitioV3",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "userlegacy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

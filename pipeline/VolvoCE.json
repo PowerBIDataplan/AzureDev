@@ -1,0 +1,151 @@
+{
+	"name": "VolvoCE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute GetFleet",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set from date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "VolvoCE_Fleet",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "UntilToday",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Execute GetFleet",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(variables('Datetime_to'),utcnow())",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Execute Fuel_hours",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "SetToDate",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Fuel_Hours",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Datetime_from": {
+										"value": "@variables('Datetime_from')",
+										"type": "Expression"
+									},
+									"Datetime_to": {
+										"value": "@variables('Datetime_to')",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set NewFrom",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute Fuel_hours",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Datetime_from",
+								"value": {
+									"value": "@variables('Datetime_to')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetToDate",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Datetime_to",
+								"value": {
+									"value": "@adddays(variables('Datetime_from'), 27)",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Set from date",
+				"description": "Now - 14 days",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Datetime_from",
+					"value": {
+						"value": "@formatDateTime(adddays(utcNow(), -14), 'yyyy-MM-ddT00:00:00Z')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Token": {
+				"type": "String"
+			},
+			"FleetCount": {
+				"type": "String"
+			},
+			"FleetArray": {
+				"type": "Array"
+			},
+			"Datetime_from": {
+				"type": "String",
+				"defaultValue": "2021-01-01T00:00:00Z"
+			},
+			"Datetime_to": {
+				"type": "String",
+				"defaultValue": "2021-02-28T23:59:59Z"
+			}
+		},
+		"folder": {
+			"name": "Volvo CE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-12-02T14:22:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

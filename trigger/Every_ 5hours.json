@@ -1,0 +1,24 @@
+{
+	"name": "Every_ 5hours",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Tunnels_Daily",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 6,
+				"startTime": "2021-09-27T01:10:00",
+				"timeZone": "Romance Standard Time"
+			}
+		}
+	}
+}

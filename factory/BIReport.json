@@ -1,0 +1,9 @@
+{
+	"name": "BIReport",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9c923376-ea1a-4969-af6e-608313d55c98",
+		"tenantId": "b3800049-5f8b-474f-8a64-c85ccac5ac43"
+	}
+}

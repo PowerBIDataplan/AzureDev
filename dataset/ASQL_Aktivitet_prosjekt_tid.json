@@ -1,0 +1,42 @@
+{
+	"name": "ASQL_Aktivitet_prosjekt_tid",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ProjectNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "TaskNameLong",
+				"type": "varchar"
+			},
+			{
+				"name": "ResourceNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "StartDateTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EndDateTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Aktivitet_prosjekt_tid"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

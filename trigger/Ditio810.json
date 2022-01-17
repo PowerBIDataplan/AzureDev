@@ -1,0 +1,38 @@
+{
+	"name": "Ditio810",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "API-Ditio",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "Caterpillar",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-11-09T07:02:00",
+				"timeZone": "Romance Standard Time",
+				"schedule": {
+					"minutes": [
+						10
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

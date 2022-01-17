@@ -1,0 +1,136 @@
+{
+	"name": "ArsakerData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "IPArsaker"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "casenumber",
+				"type": "varchar"
+			},
+			{
+				"name": "intekst",
+				"type": "varchar"
+			},
+			{
+				"name": "datediscovered",
+				"type": "varchar"
+			},
+			{
+				"name": "type",
+				"type": "varchar"
+			},
+			{
+				"name": "inteksttxt",
+				"type": "varchar"
+			},
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "reporttypename",
+				"type": "varchar"
+			},
+			{
+				"name": "occorattempt",
+				"type": "varchar"
+			},
+			{
+				"name": "projectnum",
+				"type": "varchar"
+			},
+			{
+				"name": "duedate",
+				"type": "varchar"
+			},
+			{
+				"name": "departament",
+				"type": "varchar"
+			},
+			{
+				"name": "description",
+				"type": "varchar"
+			},
+			{
+				"name": "typehendelse",
+				"type": "varchar"
+			},
+			{
+				"name": "lukkedato",
+				"type": "varchar"
+			},
+			{
+				"name": "timeforbruk",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "tidkost",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "totalsum",
+				"type": "varchar"
+			},
+			{
+				"name": "statustxt",
+				"type": "varchar"
+			},
+			{
+				"name": "categoryname",
+				"type": "varchar"
+			},
+			{
+				"name": "caseprocessorname",
+				"type": "varchar"
+			},
+			{
+				"name": "regbyname",
+				"type": "varchar"
+			},
+			{
+				"name": "regbycompanyname",
+				"type": "varchar"
+			},
+			{
+				"name": "regtocompanyname",
+				"type": "varchar"
+			},
+			{
+				"name": "subject",
+				"type": "varchar"
+			},
+			{
+				"name": "conqlusion",
+				"type": "varchar"
+			},
+			{
+				"name": "utfallname",
+				"type": "varchar"
+			},
+			{
+				"name": "causename",
+				"type": "varchar"
+			},
+			{
+				"name": "managementcausename",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "IP_Årsaker"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

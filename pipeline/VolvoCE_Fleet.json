@@ -1,0 +1,328 @@
+{
+	"name": "VolvoCE_Fleet",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetFleetCount",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(DISTINCT(EquimentHeader_SerialNumber)) AS SIZE\n  FROM [dbo].[VolvoCE_Fleet]\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "VolvoCE_Fleet_SQL",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Total",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetFleetCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Total",
+					"value": {
+						"value": "@string(activity('GetFleetCount').output.firstRow.SIZE)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "MaxPage",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Total",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MaxPage",
+					"value": {
+						"value": "@string(if(greater(mod(int(variables('Total')),100),1), add(div(int(variables('Total')),100),1), div(int(variables('Total')),100)))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Until Page 3",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "MaxPage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(int(variables('Page')),int(variables('MaxPage')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "SaveFleetDataToSQL",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "@{concat('X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:Bearer ',variables('Token'))}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['EquipmentHeader']['OEMName']"
+											},
+											"sink": {
+												"name": "EquimentHeader_OEMName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EquipmentHeader']['Model']"
+											},
+											"sink": {
+												"name": "EquimentHeader_Model",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EquipmentHeader']['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquimentHeader_SerialNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['Latitude']"
+											},
+											"sink": {
+												"name": "Location_lat",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['Longitude']"
+											},
+											"sink": {
+												"name": "Location_lon",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['@datetime']"
+											},
+											"sink": {
+												"name": "Location_datetime",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['Fleet']['Equipment']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "GetFleet_XML",
+									"type": "DatasetReference",
+									"parameters": {
+										"Page": {
+											"value": "@variables('Page')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VolvoCE_Fleet_SQL",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set Help",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SaveFleetDataToSQL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Help",
+								"value": {
+									"value": "@variables('Page')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set NewPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set Help",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Page",
+								"value": {
+									"value": "@string(add(int(variables('Help')),1))",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "GetToken",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "GetFleetCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://idp.prod.shared.eu.vgtng.volvo.com/identityprovider/oauth/token",
+					"method": "POST",
+					"headers": {
+						"Authorization": "Basic UmVudGFsT25lQVM6cHRhRVBmREh4NmJWdUY0VA==",
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"body": "grant_type=password&username=aemp2_user%40risa.no&password=abcd1234&scope=auto"
+				}
+			},
+			{
+				"name": "Token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@activity('GetToken').output.access_token",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"Total": {
+				"type": "String"
+			},
+			"MaxPage": {
+				"type": "String"
+			},
+			"Token": {
+				"type": "String"
+			},
+			"Help": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Volvo CE"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-12-02T14:22:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

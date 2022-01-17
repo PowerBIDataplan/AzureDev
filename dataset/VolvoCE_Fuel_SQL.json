@@ -1,0 +1,39 @@
+{
+	"name": "VolvoCE_Fuel_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Volvo CE"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EquipmentHeader_SerialNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Datetime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "FuelConsumed",
+				"type": "nchar"
+			},
+			{
+				"name": "FuelUnits",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VolvoCE_Fuel"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

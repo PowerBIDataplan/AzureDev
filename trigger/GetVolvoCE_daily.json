@@ -1,0 +1,56 @@
+{
+	"name": "GetVolvoCE_daily",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "VolvoTrucks_VehicleStatuses",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "Codatahost",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "IPArsakerUpdate",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "Aktivitet_prosjekt_tid",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "AllFuel",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2020-08-24T06:00:00",
+				"timeZone": "W. Europe Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}

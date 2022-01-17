@@ -1,0 +1,222 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Amount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Approved",
+				"type": "char"
+			},
+			{
+				"name": "ApprovedByName",
+				"type": "varchar"
+			},
+			{
+				"name": "ApprovedDateTime",
+				"type": "varchar"
+			},
+			{
+				"name": "BreakQt",
+				"type": "varchar"
+			},
+			{
+				"name": "BreakUnplanned",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ChapterId",
+				"type": "varchar"
+			},
+			{
+				"name": "CompanyName",
+				"type": "varchar"
+			},
+			{
+				"name": "CompanyOrgNr",
+				"type": "varchar"
+			},
+			{
+				"name": "CostAmount",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "CostPriceBase",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "DescriptionInternal",
+				"type": "varchar"
+			},
+			{
+				"name": "DinnerSkipped",
+				"type": "char"
+			},
+			{
+				"name": "DinnerSubtracted",
+				"type": "char"
+			},
+			{
+				"name": "EmployeeNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "ExternalId",
+				"type": "varchar"
+			},
+			{
+				"name": "PieceWorkId",
+				"type": "varchar"
+			},
+			{
+				"name": "ExternalDim01",
+				"type": "varchar"
+			},
+			{
+				"name": "Id",
+				"type": "varchar"
+			},
+			{
+				"name": "Locked",
+				"type": "char"
+			},
+			{
+				"name": "LockedByName",
+				"type": "varchar"
+			},
+			{
+				"name": "LockedDateTime",
+				"type": "varchar"
+			},
+			{
+				"name": "LunchSkipped",
+				"type": "char"
+			},
+			{
+				"name": "LunchSubtracted",
+				"type": "char"
+			},
+			{
+				"name": "Price",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "PrimaryResourceName",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectCompanyName",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectName",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "ProjectCompanyId",
+				"type": "varchar"
+			},
+			{
+				"name": "Qty",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ResourceName",
+				"type": "varchar"
+			},
+			{
+				"name": "ResourceNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "ResourceTypeName",
+				"type": "varchar"
+			},
+			{
+				"name": "StartDateTime",
+				"type": "varchar"
+			},
+			{
+				"name": "StopDateTime",
+				"type": "varchar"
+			},
+			{
+				"name": "TaskName",
+				"type": "varchar"
+			},
+			{
+				"name": "TaskNameLong",
+				"type": "varchar"
+			},
+			{
+				"name": "UnitName",
+				"type": "varchar"
+			},
+			{
+				"name": "UnitPrice",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UnitQty",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "UserBirthDate",
+				"type": "varchar"
+			},
+			{
+				"name": "UserName",
+				"type": "varchar"
+			},
+			{
+				"name": "WorkShiftSettingName",
+				"type": "varchar"
+			},
+			{
+				"name": "ExternalProjectNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "MachineEmissionClass",
+				"type": "varchar"
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "UserId",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Ditio"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

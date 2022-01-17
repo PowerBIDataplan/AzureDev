@@ -1,0 +1,51 @@
+{
+	"name": "JsonTunnels",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageTunnels",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "00.json",
+				"folderPath": "HUB-85757/00/2021/09/01/00",
+				"container": "messages"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"EnqueuedTimeUtc": {
+					"type": "string"
+				},
+				"Properties": {
+					"type": "object"
+				},
+				"SystemProperties": {
+					"type": "object",
+					"properties": {
+						"connectionDeviceId": {
+							"type": "string"
+						},
+						"connectionAuthMethod": {
+							"type": "string"
+						},
+						"connectionDeviceGenerationId": {
+							"type": "string"
+						},
+						"enqueuedTime": {
+							"type": "string"
+						}
+					}
+				},
+				"Body": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,38 @@
+{
+	"name": "SQL_UnpivotTunnel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "varchar"
+			},
+			{
+				"name": "Tunnel",
+				"type": "varchar"
+			},
+			{
+				"name": "Signal",
+				"type": "varchar"
+			},
+			{
+				"name": "Value",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Tunnels_Unpivot"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

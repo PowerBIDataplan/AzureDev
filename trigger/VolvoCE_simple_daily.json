@@ -1,0 +1,32 @@
+{
+	"name": "VolvoCE_simple_daily",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "VolvoCE_ditio_machine",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-02-27T05:30:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						5
+					]
+				}
+			}
+		}
+	}
+}

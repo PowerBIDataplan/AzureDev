@@ -1,0 +1,13 @@
+{
+	"name": "DitioMassConnecitonAPI",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://ditio-report-api.azurewebsites.net/api/mass-transport-report/mass-transport-report",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

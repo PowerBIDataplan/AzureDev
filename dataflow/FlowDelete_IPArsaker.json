@@ -1,0 +1,28 @@
+{
+	"name": "FlowDelete_IPArsaker",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlIPNewData",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ArsakerData",
+						"type": "DatasetReference"
+					},
+					"name": "SinkNewData"
+				}
+			],
+			"transformations": [],
+			"script": "source(output(\n\t\tcasenumber as string,\n\t\tintekst as string,\n\t\tdatediscovered as string,\n\t\ttype as string,\n\t\tinteksttxt as string,\n\t\tid as integer,\n\t\treporttypename as string,\n\t\toccorattempt as string,\n\t\tprojectnum as string,\n\t\tduedate as string,\n\t\tdepartament as string,\n\t\tdescription as string,\n\t\ttypehendelse as string,\n\t\tlukkedato as string,\n\t\ttimeforbruk as double,\n\t\ttidkost as integer,\n\t\ttotalsum as integer,\n\t\tstatustxt as string,\n\t\tcategoryname as string,\n\t\tcaseprocessorname as string,\n\t\tregbyname as string,\n\t\tregbycompanyname as string,\n\t\tregtocompanyname as string,\n\t\tsubject as string,\n\t\tconqlusion as string,\n\t\tutfallname as string,\n\t\tcausename as string,\n\t\tmanagementcausename as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tisolationLevel: 'NONE',\n\tformat: 'table') ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tcasenumber as string,\n\t\tintekst as string,\n\t\tdatediscovered as string,\n\t\ttype as string,\n\t\tinteksttxt as string,\n\t\tid as integer,\n\t\treporttypename as string,\n\t\toccorattempt as string,\n\t\tprojectnum as string,\n\t\tduedate as string,\n\t\tdepartament as string,\n\t\tdescription as string,\n\t\ttypehendelse as string,\n\t\tlukkedato as string,\n\t\ttimeforbruk as double,\n\t\ttidkost as integer,\n\t\ttotalsum as string,\n\t\tstatustxt as string,\n\t\tcategoryname as string,\n\t\tcaseprocessorname as string,\n\t\tregbyname as string,\n\t\tregbycompanyname as string,\n\t\tregtocompanyname as string,\n\t\tsubject as string,\n\t\tconqlusion as string,\n\t\tutfallname as string,\n\t\tcausename as string,\n\t\tmanagementcausename as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tpreSQLs:['TRUNCATE TABLE IP_Årsaker'],\n\tpostSQLs:['TRUNCATE TABLE IP_Årsaker_test'],\n\terrorHandlingOption: 'stopOnFirstError') ~> SinkNewData"
+		}
+	}
+}

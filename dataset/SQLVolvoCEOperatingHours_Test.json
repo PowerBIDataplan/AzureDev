@@ -1,0 +1,36 @@
+{
+	"name": "SQLVolvoCEOperatingHours_Test",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EquipmentHeader_SerialNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Datetime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Source",
+				"type": "varchar"
+			},
+			{
+				"name": "Hour",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VolvoCE_OperatingHour_test"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,13 @@
+{
+	"name": "VolvoCE",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.volvo.com/vce/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"name": "DitioConnectionAPI",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://ditio-api-v3.azurewebsites.net/api/reporting/external-report",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

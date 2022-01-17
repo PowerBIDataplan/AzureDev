@@ -1,0 +1,25 @@
+{
+	"name": "VolvoCE_Fleet_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Volvo CE"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Data",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VolvoCE_Fleet"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,126 @@
+{
+	"name": "SQLMass",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Ditio"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "companyName",
+				"type": "varchar"
+			},
+			{
+				"name": "projectName",
+				"type": "varchar"
+			},
+			{
+				"name": "taskDescription",
+				"type": "varchar"
+			},
+			{
+				"name": "dumperDriverName",
+				"type": "varchar"
+			},
+			{
+				"name": "loaderName",
+				"type": "varchar"
+			},
+			{
+				"name": "projectNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "projectCompanyId",
+				"type": "varchar"
+			},
+			{
+				"name": "projectCompanyName",
+				"type": "varchar"
+			},
+			{
+				"name": "dumperName",
+				"type": "varchar"
+			},
+			{
+				"name": "massType",
+				"type": "varchar"
+			},
+			{
+				"name": "quantity",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "quantityM3",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "m3PerHour",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "dumpCode",
+				"type": "varchar"
+			},
+			{
+				"name": "loadDateTime",
+				"type": "varchar"
+			},
+			{
+				"name": "dumpDateTime",
+				"type": "varchar"
+			},
+			{
+				"name": "tripId",
+				"type": "varchar"
+			},
+			{
+				"name": "loaderDriverName",
+				"type": "varchar"
+			},
+			{
+				"name": "averageSpeed",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "distance",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "loadLocationName",
+				"type": "varchar"
+			},
+			{
+				"name": "dumpLocationName",
+				"type": "varchar"
+			},
+			{
+				"name": "comment",
+				"type": "varchar"
+			},
+			{
+				"name": "externalProjectId",
+				"type": "varchar"
+			},
+			{
+				"name": "registrationNumber",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MassTransport"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

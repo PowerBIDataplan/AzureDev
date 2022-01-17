@@ -1,0 +1,13 @@
+{
+	"name": "Rest_Caterpillar",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://services.cat.com/telematics/iso15143/fleet/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

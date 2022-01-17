@@ -1,0 +1,772 @@
+{
+	"name": "VolvoCE_FleetOld",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetToken",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Stored procedure - truncate table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://idp.prod.shared.eu.vgtng.volvo.com/identityprovider/oauth/token",
+					"method": "POST",
+					"headers": {
+						"Authorization": "Basic UmVudGFsT25lQVM6cHRhRVBmREh4NmJWdUY0VA==",
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"body": "grant_type=password&username=aemp2_user%40risa.no&password=abcd1234&scope=auto"
+				}
+			},
+			{
+				"name": "Until_Fleet",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "GetToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('Repeat'),variables('End'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "SetToken",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Token",
+								"value": {
+									"value": "@concat('Bearer ', activity('GetToken').output.access_token)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "NewPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SaveFleetDataToSQL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "NewPage",
+								"value": {
+									"value": "@string(variables('Page'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "NewPage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Page",
+								"value": {
+									"value": "@string(add(int(variables('NewPage')),1))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "RepeatFalse",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "SaveFleetDataToSQL",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Repeat",
+								"value": {
+									"value": "'100'",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SaveFleetDataToSQL",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "SetToken",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "@{concat('X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:', variables('Token'))}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['EquipmentHeader']['OEMName']"
+											},
+											"sink": {
+												"name": "EquimentHeader_OEMName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EquipmentHeader']['Model']"
+											},
+											"sink": {
+												"name": "EquimentHeader_Model",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EquipmentHeader']['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquimentHeader_SerialNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['Latitude']"
+											},
+											"sink": {
+												"name": "Location_lat",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['Longitude']"
+											},
+											"sink": {
+												"name": "Location_lon",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['@datetime']"
+											},
+											"sink": {
+												"name": "Location_datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "['EngineStatus']['EngineNumber']"
+											},
+											"sink": {
+												"name": "EngineStatus_number",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EngineStatus']['Running']"
+											},
+											"sink": {
+												"name": "EngineStatus_running",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EngineStatus']['@datetime']"
+											},
+											"sink": {
+												"name": "EngineStatus_datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Fleet']['@version']"
+											},
+											"sink": {
+												"name": "version",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Fleet']['@snapshotTime']"
+											},
+											"sink": {
+												"name": "snapshotTime",
+												"type": "DateTime"
+											}
+										}
+									],
+									"collectionReference": "$['Fleet']['Equipment']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "APIVolvoCeFleet_Xml",
+									"type": "DatasetReference",
+									"parameters": {
+										"page": {
+											"value": "@variables('Page')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SQLVolvoCEFleet",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Stored procedure - truncate table",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[TruncateFleet]",
+					"storedProcedureParameters": {
+						"databaseName": {
+							"value": "RisaBiReports",
+							"type": "String"
+						},
+						"tableName": {
+							"value": "VolvoCE_Fleet_test",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "Ditio",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Restart-Page",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Until_Fleet",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Page",
+					"value": "1"
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetFleetFromSQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetFleetFromSQL').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(int(variables('Page')),10)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "GetIdleHours",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "XmlSource",
+												"additionalColumns": [
+													{
+														"name": "SerialNumber",
+														"value": {
+															"value": "@item().EquimentHeader_SerialNumber",
+															"type": "Expression"
+														}
+													},
+													{
+														"name": "Source",
+														"value": "IdleHours"
+													}
+												],
+												"storeSettings": {
+													"type": "HttpReadSettings",
+													"requestMethod": "GET",
+													"additionalHeaders": {
+														"value": "@{concat('X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:', variables('Token'))}",
+														"type": "Expression"
+													},
+													"requestTimeout": ""
+												},
+												"formatSettings": {
+													"type": "XmlReadSettings",
+													"validationMode": "none",
+													"namespaces": true
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink"
+											},
+											"enableStaging": false,
+											"enableSkipIncompatibleRow": true,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"path": "['Hour']"
+														},
+														"sink": {
+															"name": "Hour",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "['@datetime']"
+														},
+														"sink": {
+															"name": "Datetime",
+															"type": "DateTime"
+														}
+													},
+													{
+														"source": {
+															"path": "$['SerialNumber']"
+														},
+														"sink": {
+															"name": "EquipmentHeader_SerialNumber",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['Source']"
+														},
+														"sink": {
+															"name": "Source",
+															"type": "String"
+														}
+													}
+												],
+												"collectionReference": "$['CumulativeIdleHoursMessages']['CumulativeIdleHours']",
+												"mapComplexValuesToString": true
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "GetIdleHours_XML",
+												"type": "DatasetReference",
+												"parameters": {
+													"Model": {
+														"value": "@item().EquimentHeader_Model",
+														"type": "Expression"
+													},
+													"SerialNumber": {
+														"value": "@item().EquimentHeader_SerialNumber",
+														"type": "Expression"
+													},
+													"DateTime_from": {
+														"value": "@variables('Datetime_from')",
+														"type": "Expression"
+													},
+													"DateTime_to": {
+														"value": "@variables('Datetime_to')",
+														"type": "Expression"
+													},
+													"OEM": {
+														"value": "@item().EquimentHeader_OEMName",
+														"type": "Expression"
+													},
+													"Page": {
+														"value": "@variables('Page')",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "SQLVolvoCEOperatingHours_Test",
+												"type": "DatasetReference"
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "GetFleetFromSQL",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Restart-Page",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT DISTINCT([EquimentHeader_SerialNumber]),  [EquimentHeader_Model], [EquimentHeader_OEMName]\n  FROM [dbo].[VolvoCE_Fleet_test]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SQLVolvoCEFleet",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "GetFuel from API",
+				"description": "Loops all serial numbers and loads the fuel consumed from the API",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetFleetFromSQL_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetFleetFromSQL_copy1').output",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "GetFuel",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"additionalColumns": [
+										{
+											"name": "SerialNumber",
+											"value": {
+												"value": "@item().EquimentHeader_SerialNumber",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "@{concat('X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:', variables('Token'))}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['FuelUnits']"
+											},
+											"sink": {
+												"name": "FuelUnits",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['FuelConsumed']"
+											},
+											"sink": {
+												"name": "FuelConsumed",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['@datetime']"
+											},
+											"sink": {
+												"name": "Datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquipmentHeader_SerialNumber",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['FuelUsedMessages']['FuelUsed']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "GetFuelHours_XML",
+									"type": "DatasetReference",
+									"parameters": {
+										"Model": {
+											"value": "@item().EquimentHeader_Model",
+											"type": "Expression"
+										},
+										"SerialNumber": {
+											"value": "@item().EquimentHeader_SerialNumber",
+											"type": "Expression"
+										},
+										"DateTime_from": {
+											"value": "@variables('Datetime_from')",
+											"type": "Expression"
+										},
+										"DateTime_to": {
+											"value": "@variables('Datetime_to')",
+											"type": "Expression"
+										},
+										"OEM": {
+											"value": "@item().EquimentHeader_OEMName",
+											"type": "Expression"
+										},
+										"Page": {
+											"value": "@variables('Page')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SQLFuelVolvoCE_Test",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Delay finish for fuel",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "GetFuel",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 10
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "GetFleetFromSQL_copy1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT DISTINCT([EquimentHeader_SerialNumber]),  [EquimentHeader_Model], [EquimentHeader_OEMName]\n  FROM [dbo].[VolvoCE_Fleet_test]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SQLVolvoCEFleet",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"variables": {
+			"Page": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"Token": {
+				"type": "String"
+			},
+			"NewPage": {
+				"type": "String"
+			},
+			"Repeat": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"End": {
+				"type": "String",
+				"defaultValue": "'100'"
+			},
+			"Datetime_from": {
+				"type": "String",
+				"defaultValue": "2021-09-01T00:00:00Z"
+			},
+			"Datetime_to": {
+				"type": "String",
+				"defaultValue": "2021-09-15T23:59:59Z"
+			}
+		},
+		"folder": {
+			"name": "VolvoCE_New"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-12-02T14:22:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

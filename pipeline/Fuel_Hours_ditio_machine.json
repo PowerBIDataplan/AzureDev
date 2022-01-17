@@ -1,0 +1,643 @@
+{
+	"name": "Fuel_Hours_ditio_machine",
+	"properties": {
+		"description": "Uses serial numbers from machines in Ditio to get data",
+		"activities": [
+			{
+				"name": "GetHours from API",
+				"description": "Loops all serial numbers and loads the hours (operating and idle) from the API",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set end date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set start date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "GetFleetFromSQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetFleetFromSQL').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "GetIdleHours",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"additionalColumns": [
+										{
+											"name": "SerialNumber",
+											"value": {
+												"value": "@item().EquimentHeader_SerialNumber",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "Source",
+											"value": "IdleHours"
+										}
+									],
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:Bearer @{variables('Token')}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['Hour']"
+											},
+											"sink": {
+												"name": "Hour",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['@datetime']"
+											},
+											"sink": {
+												"name": "Datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquipmentHeader_SerialNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Source']"
+											},
+											"sink": {
+												"name": "Source",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['CumulativeIdleHoursMessages']['CumulativeIdleHours']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "GetIdleHours_XML",
+									"type": "DatasetReference",
+									"parameters": {
+										"Model": {
+											"value": "@item().EquimentHeader_Model",
+											"type": "Expression"
+										},
+										"SerialNumber": {
+											"value": "@item().EquimentHeader_SerialNumber",
+											"type": "Expression"
+										},
+										"DateTime_from": {
+											"value": "@pipeline().parameters.Datetime_from",
+											"type": "Expression"
+										},
+										"DateTime_to": {
+											"value": "@pipeline().parameters.Datetime_to",
+											"type": "Expression"
+										},
+										"OEM": {
+											"value": "@item().EquimentHeader_OEMName",
+											"type": "Expression"
+										},
+										"Page": {
+											"value": "1",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VolvoCE_Hour_SQL",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "GetOperatingHours",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Delay progress",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"additionalColumns": [
+										{
+											"name": "SerialNumber",
+											"value": {
+												"value": "@item().EquimentHeader_SerialNumber",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "Source",
+											"value": "OperatingHours"
+										}
+									],
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:Bearer @{variables('Token')}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['Hour']"
+											},
+											"sink": {
+												"name": "Hour",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['@datetime']"
+											},
+											"sink": {
+												"name": "Datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquipmentHeader_SerialNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Source']"
+											},
+											"sink": {
+												"name": "Source",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['CumulativeOperatingHoursMessages']['CumulativeOperatingHours']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "GetOperatingHours_XML",
+									"type": "DatasetReference",
+									"parameters": {
+										"Model": {
+											"value": "@item().EquimentHeader_Model",
+											"type": "Expression"
+										},
+										"SerialNumber": {
+											"value": "@item().EquimentHeader_SerialNumber",
+											"type": "Expression"
+										},
+										"DateTime_from": {
+											"value": "@pipeline().parameters.Datetime_from",
+											"type": "Expression"
+										},
+										"DateTime_to": {
+											"value": "@pipeline().parameters.Datetime_to",
+											"type": "Expression"
+										},
+										"OEM": {
+											"value": "@item().EquimentHeader_OEMName",
+											"type": "Expression"
+										},
+										"Page": {
+											"value": "1",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VolvoCE_Hour_SQL",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Delay progress",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "GetIdleHours",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "GetFuel from API",
+				"description": "Loops all serial numbers and loads the fuel consumed from the API",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Delay progress to fuel",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetFleetFromSQL').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "GetFuel",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"additionalColumns": [
+										{
+											"name": "SerialNumber",
+											"value": {
+												"value": "@item().EquimentHeader_SerialNumber",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:Bearer @{variables('Token')}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink"
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": true,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['FuelUnits']"
+											},
+											"sink": {
+												"name": "FuelUnits",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['FuelConsumed']"
+											},
+											"sink": {
+												"name": "FuelConsumed",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['@datetime']"
+											},
+											"sink": {
+												"name": "Datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquipmentHeader_SerialNumber",
+												"type": "String"
+											}
+										}
+									],
+									"collectionReference": "$['FuelUsedMessages']['FuelUsed']",
+									"mapComplexValuesToString": true
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "GetFuelHours_XML",
+									"type": "DatasetReference",
+									"parameters": {
+										"Model": {
+											"value": "@item().EquimentHeader_Model",
+											"type": "Expression"
+										},
+										"SerialNumber": {
+											"value": "@item().EquimentHeader_SerialNumber",
+											"type": "Expression"
+										},
+										"DateTime_from": {
+											"value": "@pipeline().parameters.Datetime_from",
+											"type": "Expression"
+										},
+										"DateTime_to": {
+											"value": "@pipeline().parameters.Datetime_to",
+											"type": "Expression"
+										},
+										"OEM": {
+											"value": "@item().EquimentHeader_OEMName",
+											"type": "Expression"
+										},
+										"Page": {
+											"value": "1",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VolvoCE_Fuel_SQL",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Delay finish for fuel",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "GetFuel",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "GetFleetFromSQL",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT DISTINCT(TRIM(SerialNumber)) as EquimentHeader_SerialNumber, F.EquimentHeader_Model, F.EquimentHeader_OEMName\n  FROM [dbo].[Machine] M\n  LEFT JOIN VolvoCE_Fleet F\n  on TRIM(M.SerialNumber) = F.EquimentHeader_SerialNumber\n  where M.SerialNumber is not null",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "VolvoCE_Fleet_SQL",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set start date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Date_from",
+					"value": {
+						"value": "@pipeline().parameters.Datetime_from",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set end date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Date_to",
+					"value": {
+						"value": "@pipeline().parameters.Datetime_to",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "GetToken",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://idp.prod.shared.eu.vgtng.volvo.com/identityprovider/oauth/token",
+					"method": "POST",
+					"headers": {
+						"Authorization": "Basic UmVudGFsT25lQVM6cHRhRVBmREh4NmJWdUY0VA==",
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					"body": "grant_type=password&username=aemp2_user%40risa.no&password=abcd1234&scope=auto"
+				}
+			},
+			{
+				"name": "SetToken",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetToken",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@{activity('GetToken').output.access_token}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Delay progress to fuel",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "GetHours from API",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 10
+				}
+			}
+		],
+		"parameters": {
+			"Datetime_from": {
+				"type": "string",
+				"defaultValue": "2020-10-01T00:00:00Z"
+			},
+			"Datetime_to": {
+				"type": "string",
+				"defaultValue": "2020-10-27T23:59:59Z"
+			}
+		},
+		"variables": {
+			"Token": {
+				"type": "String"
+			},
+			"FleetCount": {
+				"type": "String"
+			},
+			"FleetArray": {
+				"type": "Array"
+			},
+			"Date_from": {
+				"type": "String"
+			},
+			"Date_to": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "VolveCE Ditio Machine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-06-17T11:03:55Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

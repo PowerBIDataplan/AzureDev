@@ -1,0 +1,116 @@
+{
+	"name": "VolvoCE_simple",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute GetFleet",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set from date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "VolvoCE_Fleet",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Set from date",
+				"description": "Now - 7 days",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Datetime_from",
+					"value": {
+						"value": "@formatDateTime(adddays(utcNow(), -4), 'yyyy-MM-ddT00:00:00Z')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Execute Fuel_hours_fast",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "SetToDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Fuel_Hours_fast",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Datetime_from": {
+							"value": "@variables('Datetime_from')",
+							"type": "Expression"
+						},
+						"Datetime_to": {
+							"value": "@variables('Datetime_to')",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "SetToDate",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Execute GetFleet",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Datetime_to",
+					"value": {
+						"value": "@adddays(variables('Datetime_from'), 5)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Token": {
+				"type": "String"
+			},
+			"FleetCount": {
+				"type": "String"
+			},
+			"FleetArray": {
+				"type": "Array"
+			},
+			"Datetime_from": {
+				"type": "String",
+				"defaultValue": "2021-01-01T00:00:00Z"
+			},
+			"Datetime_to": {
+				"type": "String",
+				"defaultValue": "2021-02-28T23:59:59Z"
+			}
+		},
+		"folder": {
+			"name": "VolveCE Ditio Machine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-12-02T14:22:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,2053 @@
+{
+	"name": "API-Ditio",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy SQLDataBase - DItio",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Date SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:40:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": "{\"FromDate\":\"2019-09-01T00:00:00Z\",\"ToDate\":\"2021-12-31T00:00:00Z\"}",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ' , variables('Token'))",
+								"type": "Expression"
+							},
+							"Content-Type": "application/json"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Amount']"
+								},
+								"sink": {
+									"name": "Amount",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Approved']"
+								},
+								"sink": {
+									"name": "Approved",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ApprovedByName']"
+								},
+								"sink": {
+									"name": "ApprovedByName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ApprovedDateTime']"
+								},
+								"sink": {
+									"name": "ApprovedDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['BreakQty']"
+								},
+								"sink": {
+									"name": "BreakQt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['BreakUnplanned']"
+								},
+								"sink": {
+									"name": "BreakUnplanned",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ChapterId']"
+								},
+								"sink": {
+									"name": "ChapterId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyName']"
+								},
+								"sink": {
+									"name": "CompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyOrgNr']"
+								},
+								"sink": {
+									"name": "CompanyOrgNr",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CostPriceBase']"
+								},
+								"sink": {
+									"name": "CostPriceBase",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CostAmount']"
+								},
+								"sink": {
+									"name": "CostAmount",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Description']"
+								},
+								"sink": {
+									"name": "Description",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['DescriptionInternal']"
+								},
+								"sink": {
+									"name": "DescriptionInternal",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['DinnerSkipped']"
+								},
+								"sink": {
+									"name": "DinnerSkipped",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['DinnerSubtracted']"
+								},
+								"sink": {
+									"name": "DinnerSubtracted",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['EmployeeNumber']"
+								},
+								"sink": {
+									"name": "EmployeeNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ExternalId']"
+								},
+								"sink": {
+									"name": "ExternalId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['PieceWorkId']"
+								},
+								"sink": {
+									"name": "PieceWorkId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ExternalDim01']"
+								},
+								"sink": {
+									"name": "ExternalDim01",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Id']"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Locked']"
+								},
+								"sink": {
+									"name": "Locked",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LockedByName']"
+								},
+								"sink": {
+									"name": "LockedByName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LockedDateTime']"
+								},
+								"sink": {
+									"name": "LockedDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LunchSkipped']"
+								},
+								"sink": {
+									"name": "LunchSkipped",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LunchSubtracted']"
+								},
+								"sink": {
+									"name": "LunchSubtracted",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Price']"
+								},
+								"sink": {
+									"name": "Price",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['PrimaryResourceName']"
+								},
+								"sink": {
+									"name": "PrimaryResourceName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ProjectCompanyName']"
+								},
+								"sink": {
+									"name": "ProjectCompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ProjectName']"
+								},
+								"sink": {
+									"name": "ProjectName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ProjectNumber']"
+								},
+								"sink": {
+									"name": "ProjectNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ProjectCompanyId']"
+								},
+								"sink": {
+									"name": "ProjectCompanyId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Qty']"
+								},
+								"sink": {
+									"name": "Qty",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceName']"
+								},
+								"sink": {
+									"name": "ResourceName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceNumber']"
+								},
+								"sink": {
+									"name": "ResourceNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceTypeName']"
+								},
+								"sink": {
+									"name": "ResourceTypeName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['StartDateTime']"
+								},
+								"sink": {
+									"name": "StartDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['StopDateTime']"
+								},
+								"sink": {
+									"name": "StopDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['TaskName']"
+								},
+								"sink": {
+									"name": "TaskName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['TaskNameLong']"
+								},
+								"sink": {
+									"name": "TaskNameLong",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UnitName']"
+								},
+								"sink": {
+									"name": "UnitName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UnitPrice']"
+								},
+								"sink": {
+									"name": "UnitPrice",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UnitQty']"
+								},
+								"sink": {
+									"name": "UnitQty",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserBirthDate']"
+								},
+								"sink": {
+									"name": "UserBirthDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserName']"
+								},
+								"sink": {
+									"name": "UserName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['WorkShiftSettingName']"
+								},
+								"sink": {
+									"name": "WorkShiftSettingName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ExternalProjectNumber']"
+								},
+								"sink": {
+									"name": "ExternalProjectNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MachineEmissionClass']"
+								},
+								"sink": {
+									"name": "MachineEmissionClass",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserId']"
+								},
+								"sink": {
+									"name": "UserId",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "RestResource1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlNewData",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "If Condition Have rows",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Copy SQLDataBase - DItio",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Copy SQLDataBase - Ditio').output.rowsCopied,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "FlowDelete",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "FlowDelete",
+									"type": "DataFlowReference"
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy SQLDataBaseMass",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Date SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": "{\"companyId\": \"000353\",\"FromDate\":\"2020-09-01T00:00:00Z\",\"ToDate\":\"2021-12-31T00:00:00Z\"}",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ' , variables('Token'))",
+								"type": "Expression"
+							},
+							"Content-Type": "application/json"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['companyName']"
+								},
+								"sink": {
+									"name": "companyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['projectName']"
+								},
+								"sink": {
+									"name": "projectName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['taskDescription']"
+								},
+								"sink": {
+									"name": "taskDescription",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dumperDriverName']"
+								},
+								"sink": {
+									"name": "dumperDriverName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dumperId']"
+								},
+								"sink": {
+									"name": "dumperId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['loaderName']"
+								},
+								"sink": {
+									"name": "loaderName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['projectNumber']"
+								},
+								"sink": {
+									"name": "projectNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['projectCompanyId']"
+								},
+								"sink": {
+									"name": "projectCompanyId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['projectCompanyName']"
+								},
+								"sink": {
+									"name": "projectCompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dumperName']"
+								},
+								"sink": {
+									"name": "dumperName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['massType']"
+								},
+								"sink": {
+									"name": "massType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['quantity']"
+								},
+								"sink": {
+									"name": "quantity",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['quantityM3']"
+								},
+								"sink": {
+									"name": "quantityM3",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['m3PerHour']"
+								},
+								"sink": {
+									"name": "m3PerHour",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['loadDateTime']"
+								},
+								"sink": {
+									"name": "loadDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dumpDateTime']"
+								},
+								"sink": {
+									"name": "dumpDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['tripId']"
+								},
+								"sink": {
+									"name": "tripId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['averageSpeed']"
+								},
+								"sink": {
+									"name": "averageSpeed",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['distance']"
+								},
+								"sink": {
+									"name": "distance",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['loadLocationName']"
+								},
+								"sink": {
+									"name": "loadLocationName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dumpLocationName']"
+								},
+								"sink": {
+									"name": "dumpLocationName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['comment']"
+								},
+								"sink": {
+									"name": "comment",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "RestMass",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureMassTransportNewData",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "If Condition Have rows Mass",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Copy SQLDataBaseMass",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Copy SQLDataBaseMass').output.rowsCopied,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "FlowDelete_MassTransportNewData",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "FlowDelete_MassTransportNewData",
+									"type": "DataFlowReference"
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy SQLDataBaseMachine",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Date SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:10:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ' ,variables('Token'))",
+								"type": "Expression"
+							},
+							"Content-Type": "application/json"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['CompanyName']"
+								},
+								"sink": {
+									"name": "CompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CanEdit']"
+								},
+								"sink": {
+									"name": "CanEdit",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceExternalRefs'][0]['ResourceNumber']"
+								},
+								"sink": {
+									"name": "ResourceExternalRefs.ResourceNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceExternalRefs'][0]['ExternalRefType']"
+								},
+								"sink": {
+									"name": "ResourceExternalRefs.ExternalRefType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceExternalRefs'][0]['ExternalRefValue']"
+								},
+								"sink": {
+									"name": "ResourceExternalRefs.ExternalRefValue",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceExternalRefs'][0]['Id']"
+								},
+								"sink": {
+									"name": "ResourceExternalRefs.Id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceExternalRefs'][0]['CompanyId']"
+								},
+								"sink": {
+									"name": "ResourceExternalRefs.CompanyId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceExternalRefs'][0]['RecVersion']"
+								},
+								"sink": {
+									"name": "ResourceExternalRefs.RecVersion",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceNameFull']"
+								},
+								"sink": {
+									"name": "ResourceNameFull",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CapacityUnitId']"
+								},
+								"sink": {
+									"name": "CapacityUnitId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CapacityRatioRock']"
+								},
+								"sink": {
+									"name": "CapacityRatioRock",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CapacityRatioSoil']"
+								},
+								"sink": {
+									"name": "CapacityRatioSoil",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CapacityRatioClay']"
+								},
+								"sink": {
+									"name": "CapacityRatioClay",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MeasureTon']"
+								},
+								"sink": {
+									"name": "MeasureTon",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FuelType']"
+								},
+								"sink": {
+									"name": "FuelType",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FuelCapacity']"
+								},
+								"sink": {
+									"name": "FuelCapacity",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FuelConsumptionHour']"
+								},
+								"sink": {
+									"name": "FuelConsumptionHour",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FuelConsumptionCalculated']"
+								},
+								"sink": {
+									"name": "FuelConsumptionCalculated",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FuelStatus']"
+								},
+								"sink": {
+									"name": "FuelStatus",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FuelLastRefill']"
+								},
+								"sink": {
+									"name": "FuelLastRefill",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CostVariable']"
+								},
+								"sink": {
+									"name": "CostVariable",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CostPriceCalculated']"
+								},
+								"sink": {
+									"name": "CostPriceCalculated",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CostCalcDate']"
+								},
+								"sink": {
+									"name": "CostCalcDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['RunCostCalculation']"
+								},
+								"sink": {
+									"name": "RunCostCalculation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CostPrice']"
+								},
+								"sink": {
+									"name": "CostPrice",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MeasureTrips']"
+								},
+								"sink": {
+									"name": "MeasureTrips",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Price']"
+								},
+								"sink": {
+									"name": "Price",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['AnnualInspectedDate']"
+								},
+								"sink": {
+									"name": "AnnualInspectedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['InsuranceExpiryDate']"
+								},
+								"sink": {
+									"name": "InsuranceExpiryDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['BuildYear']"
+								},
+								"sink": {
+									"name": "BuildYear",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['EmissionClass']"
+								},
+								"sink": {
+									"name": "EmissionClass",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['PurchasedDate']"
+								},
+								"sink": {
+									"name": "PurchasedDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['HourMeterInitial']"
+								},
+								"sink": {
+									"name": "HourMeterInitial",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['HourMeter']"
+								},
+								"sink": {
+									"name": "HourMeter",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ServiceDate']"
+								},
+								"sink": {
+									"name": "ServiceDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ServiceHour']"
+								},
+								"sink": {
+									"name": "ServiceHour",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ServiceHourInterval']"
+								},
+								"sink": {
+									"name": "ServiceHourInterval",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ServiceHourDueWarning']"
+								},
+								"sink": {
+									"name": "ServiceHourDueWarning",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['SerialNumber']"
+								},
+								"sink": {
+									"name": "SerialNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['EngineNumber']"
+								},
+								"sink": {
+									"name": "EngineNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['RegistrationNumber']"
+								},
+								"sink": {
+									"name": "RegistrationNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MachineId']"
+								},
+								"sink": {
+									"name": "MachineId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['TypeId']"
+								},
+								"sink": {
+									"name": "Type.TypeId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['Description']"
+								},
+								"sink": {
+									"name": "Type.Description",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['BaseType']"
+								},
+								"sink": {
+									"name": "Type.BaseType",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['IsLoader']"
+								},
+								"sink": {
+									"name": "Type.IsLoader",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['IsDumper']"
+								},
+								"sink": {
+									"name": "Type.IsDumper",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['Id']"
+								},
+								"sink": {
+									"name": "Type.Id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['CompanyId']"
+								},
+								"sink": {
+									"name": "Type.CompanyId",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Type']['RecVersion']"
+								},
+								"sink": {
+									"name": "Type.RecVersion",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResourceNumber']"
+								},
+								"sink": {
+									"name": "ResourceNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Description']"
+								},
+								"sink": {
+									"name": "Description",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ProjIdCurrent']"
+								},
+								"sink": {
+									"name": "ProjIdCurrent",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LocationText']"
+								},
+								"sink": {
+									"name": "LocationText",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['GPSLocation']"
+								},
+								"sink": {
+									"name": "GPSLocation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ResponsibleId']"
+								},
+								"sink": {
+									"name": "ResponsibleId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Weight']"
+								},
+								"sink": {
+									"name": "Weight",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Capacity']"
+								},
+								"sink": {
+									"name": "Capacity",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['GeoCoordinate']"
+								},
+								"sink": {
+									"name": "GeoCoordinate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['AvatarImageId']"
+								},
+								"sink": {
+									"name": "AvatarImageId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['AllowMultiTrans']"
+								},
+								"sink": {
+									"name": "AllowMultiTrans",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Note']"
+								},
+								"sink": {
+									"name": "Note",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['EquipmentTrainingEquipmentRef']"
+								},
+								"sink": {
+									"name": "EquipmentTrainingEquipmentRef",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Active']"
+								},
+								"sink": {
+									"name": "Active",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ModifiedAt']"
+								},
+								"sink": {
+									"name": "ModifiedAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ModifiedByUserId']"
+								},
+								"sink": {
+									"name": "ModifiedByUserId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CreatedAt']"
+								},
+								"sink": {
+									"name": "CreatedAt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CreatedByUserId']"
+								},
+								"sink": {
+									"name": "CreatedByUserId",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Id']"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyId']"
+								},
+								"sink": {
+									"name": "CompanyId",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['RecVersion']"
+								},
+								"sink": {
+									"name": "RecVersion",
+									"type": "Int32"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "RestMachine",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "MachineNewData",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "If Condition Have rows Machine",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Copy SQLDataBaseMachine",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Copy SQLDataBaseMachine').output.rowsCopied,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Flow Machine",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "FlowDelete_Machine",
+									"type": "DataFlowReference"
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Copy User Legacy",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Date SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:10:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@concat('Bearer ' , variables('Token'))",
+								"type": "Expression"
+							},
+							"Content-Type": "application/json"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE dbo.userlegacy",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Id']"
+								},
+								"sink": {
+									"name": "userlegacy",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyId']"
+								},
+								"sink": {
+									"name": "CompanyID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ConnectedCompanyId']"
+								},
+								"sink": {
+									"name": "ConnectedCompanyID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyObjectId']"
+								},
+								"sink": {
+									"name": "CompanyObjectID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyName']"
+								},
+								"sink": {
+									"name": "CompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyLogoId']"
+								},
+								"sink": {
+									"name": "CompanyLogoID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ConnectedCompanyName']"
+								},
+								"sink": {
+									"name": "ConnectedCompanyName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserGroupName']"
+								},
+								"sink": {
+									"name": "UserGroupName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['PrimaryResourceName']"
+								},
+								"sink": {
+									"name": "PrimaryResourceName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CardStatus']"
+								},
+								"sink": {
+									"name": "CardStatus",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Editable']"
+								},
+								"sink": {
+									"name": "Editable",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['AspNetId']"
+								},
+								"sink": {
+									"name": "AspNetID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserCompanyProfileId']"
+								},
+								"sink": {
+									"name": "UserCompanyProfileID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['EmploymentId']"
+								},
+								"sink": {
+									"name": "EmploymentID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserId']"
+								},
+								"sink": {
+									"name": "UserID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CardExpirationDate']"
+								},
+								"sink": {
+									"name": "CardExpirationDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserGroupIdMain']"
+								},
+								"sink": {
+									"name": "UserGroupMain",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserGroupId']"
+								},
+								"sink": {
+									"name": "UserGroupID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['UserSecurityLevel']"
+								},
+								"sink": {
+									"name": "UserSecurityLevel",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Email']"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Name']"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CurrentCompanyOwner']"
+								},
+								"sink": {
+									"name": "CurrentCompanyOwner",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FirstName']"
+								},
+								"sink": {
+									"name": "FirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LastName']"
+								},
+								"sink": {
+									"name": "LastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CountryCode']"
+								},
+								"sink": {
+									"name": "CountryCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MobilePhone']"
+								},
+								"sink": {
+									"name": "MobilePhone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['LastLoginDateTime']"
+								},
+								"sink": {
+									"name": "LastLoginDateTime",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FailedLoginAttempts']"
+								},
+								"sink": {
+									"name": "FailedLoginAttempts",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Active']"
+								},
+								"sink": {
+									"name": "Active",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['BirthDate']"
+								},
+								"sink": {
+									"name": "BirthDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Department']"
+								},
+								"sink": {
+									"name": "Department",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Payroll']"
+								},
+								"sink": {
+									"name": "Payroll",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['IsProjectCompany']"
+								},
+								"sink": {
+									"name": "IsProjectCompany",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['CompanyType']"
+								},
+								"sink": {
+									"name": "CompanyType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['OrgNumber']"
+								},
+								"sink": {
+									"name": "OrgNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['IsAdmin']"
+								},
+								"sink": {
+									"name": "IsAdmin",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['IsSuperUser']"
+								},
+								"sink": {
+									"name": "IsSuperUser",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['IsUser']"
+								},
+								"sink": {
+									"name": "IsUser",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['WorkTitle']"
+								},
+								"sink": {
+									"name": "WorkTitle",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "RestUserLegacy",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlUserLegacy",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Date",
+				"description": "  Select Token\n  From dbo.Settings\n  Order BY Date DESC",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Settings",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Date SQL",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Token",
+					"value": {
+						"value": "@activity('Date').output.firstRow.Token",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Token": {
+				"type": "String"
+			},
+			"Date": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-01-17T14:13:05Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

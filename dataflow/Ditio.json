@@ -1,0 +1,32 @@
+{
+	"name": "Ditio",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DitioToken",
+						"type": "DatasetReference"
+					},
+					"name": "APIToken"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Settings",
+						"type": "DatasetReference"
+					},
+					"name": "sinkSettings"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumn1"
+				}
+			],
+			"script": "source(output(\n\t\tbody as (access_token as string, expires_in as integer, scope as string, token_type as string),\n\t\theaders as [string,string]\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\thttpMethod: 'POST',\n\tbody: 'grant_type=password&client_id=ditio_risa_as&username=%2B479804041298989&password=pt-SQ091E34%231_d%23%21&client_secret=5U3Wj8qw2BxCbAmFZ9zoSGPiGU4QuqwTwP6PSNpGiOe2FzvGCPWeUSf6UApO8YDE',\n\ttimeout: 30,\n\trequestInterval: 0,\n\theaders: ['Content-Type' -> 'application/x-www-form-urlencoded'],\n\tresponseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> APIToken\nAPIToken derive(System = 'API-Ditio',\n\t\tToken = body.access_token,\n\t\tDate = toString(currentDate())) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tSystem as string,\n\t\tToken as string,\n\t\tDate as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tSystem,\n\t\tToken,\n\t\tDate\n\t)) ~> sinkSettings"
+		}
+	}
+}

@@ -1,0 +1,776 @@
+{
+	"name": "IPArsakerUpdate",
+	"properties": {
+		"activities": [
+			{
+				"name": "SetFrom",
+				"description": "",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DateFrom",
+					"value": "2019.10.10T00:00:00Z"
+				}
+			},
+			{
+				"name": "Copy data IP_Arsaker",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SetFrom",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "SetTo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:10:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": "E1D55412C77B6E5B47C82C47E280FEAA"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['casenumber']"
+								},
+								"sink": {
+									"name": "casenumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['intekst']"
+								},
+								"sink": {
+									"name": "intekst",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['datediscovered']"
+								},
+								"sink": {
+									"name": "datediscovered",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['type']"
+								},
+								"sink": {
+									"name": "type",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['inteksttxt']"
+								},
+								"sink": {
+									"name": "inteksttxt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['id']"
+								},
+								"sink": {
+									"name": "id",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['reporttypename']"
+								},
+								"sink": {
+									"name": "reporttypename",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['occorattempt']"
+								},
+								"sink": {
+									"name": "occorattempt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['projectnum']"
+								},
+								"sink": {
+									"name": "projectnum",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['duedate']"
+								},
+								"sink": {
+									"name": "duedate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['department']"
+								},
+								"sink": {
+									"name": "departament",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['description']"
+								},
+								"sink": {
+									"name": "description",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['typehendelse']"
+								},
+								"sink": {
+									"name": "typehendelse",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['lukkedato']"
+								},
+								"sink": {
+									"name": "lukkedato",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Timeforbruk']"
+								},
+								"sink": {
+									"name": "timeforbruk",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Tidkost']"
+								},
+								"sink": {
+									"name": "tidkost",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Totalsum']"
+								},
+								"sink": {
+									"name": "totalsum",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['statustxt']"
+								},
+								"sink": {
+									"name": "statustxt",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['categoryname']"
+								},
+								"sink": {
+									"name": "categoryname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['caseprocessorname']"
+								},
+								"sink": {
+									"name": "caseprocessorname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['regbyname']"
+								},
+								"sink": {
+									"name": "regbyname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['regbycompanyname']"
+								},
+								"sink": {
+									"name": "regbycompanyname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['regtocompanyname']"
+								},
+								"sink": {
+									"name": "regtocompanyname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['subject']"
+								},
+								"sink": {
+									"name": "subject",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['conqlusion']"
+								},
+								"sink": {
+									"name": "conqlusion",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['utfallname']"
+								},
+								"sink": {
+									"name": "utfallname",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['causename']"
+								},
+								"sink": {
+									"name": "causename",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['managementcausename']"
+								},
+								"sink": {
+									"name": "managementcausename",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "IPArsaker",
+						"type": "DatasetReference",
+						"parameters": {
+							"from": {
+								"value": "@formatDateTime(variables('DateFrom'), 'yyyy.MM.dd')",
+								"type": "Expression"
+							},
+							"to": {
+								"value": "@formatDateTime(variables('DateTo'), 'yyyy.MM.dd')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlIPNewData",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "SetTo",
+				"description": "",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DateTo",
+					"value": "2020.10.04T00:00:00Z"
+				}
+			},
+			{
+				"name": "UntilToday",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Copy data IP_Arsaker",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(variables('DateFrom'),utcnow())",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Set From",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "DateFrom",
+								"value": {
+									"value": "@variables('DateTo')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data IP_Arsaker_UntilToday",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set From",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:10:00",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Authorization": "E1D55412C77B6E5B47C82C47E280FEAA"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['casenumber']"
+											},
+											"sink": {
+												"name": "casenumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['intekst']"
+											},
+											"sink": {
+												"name": "intekst",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['datediscovered']"
+											},
+											"sink": {
+												"name": "datediscovered",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['type']"
+											},
+											"sink": {
+												"name": "type",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['inteksttxt']"
+											},
+											"sink": {
+												"name": "inteksttxt",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['id']"
+											},
+											"sink": {
+												"name": "id",
+												"type": "Int32"
+											}
+										},
+										{
+											"source": {
+												"path": "$['reporttypename']"
+											},
+											"sink": {
+												"name": "reporttypename",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['occorattempt']"
+											},
+											"sink": {
+												"name": "occorattempt",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['projectnum']"
+											},
+											"sink": {
+												"name": "projectnum",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['duedate']"
+											},
+											"sink": {
+												"name": "duedate",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['department']"
+											},
+											"sink": {
+												"name": "departament",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['description']"
+											},
+											"sink": {
+												"name": "description",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['typehendelse']"
+											},
+											"sink": {
+												"name": "typehendelse",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['lukkedato']"
+											},
+											"sink": {
+												"name": "lukkedato",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Timeforbruk']"
+											},
+											"sink": {
+												"name": "timeforbruk",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Tidkost']"
+											},
+											"sink": {
+												"name": "tidkost",
+												"type": "Int32"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Totalsum']"
+											},
+											"sink": {
+												"name": "totalsum",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['statustxt']"
+											},
+											"sink": {
+												"name": "statustxt",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['categoryname']"
+											},
+											"sink": {
+												"name": "categoryname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['caseprocessorname']"
+											},
+											"sink": {
+												"name": "caseprocessorname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['regbyname']"
+											},
+											"sink": {
+												"name": "regbyname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['regbycompanyname']"
+											},
+											"sink": {
+												"name": "regbycompanyname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['regtocompanyname']"
+											},
+											"sink": {
+												"name": "regtocompanyname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['subject']"
+											},
+											"sink": {
+												"name": "subject",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['conqlusion']"
+											},
+											"sink": {
+												"name": "conqlusion",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['utfallname']"
+											},
+											"sink": {
+												"name": "utfallname",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['causename']"
+											},
+											"sink": {
+												"name": "causename",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['managementcausename']"
+											},
+											"sink": {
+												"name": "managementcausename",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "IPArsaker",
+									"type": "DatasetReference",
+									"parameters": {
+										"from": {
+											"value": "@formatDateTime(variables('DateFrom'), 'yyyy.MM.dd')",
+											"type": "Expression"
+										},
+										"to": {
+											"value": "@formatDateTime(adddays(variables('DateTo'),180), 'yyyy.MM.dd')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlIPNewData",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Set NewTo",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Copy data IP_Arsaker_UntilToday",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "DateTo",
+								"value": {
+									"value": "@adddays(variables('DateFrom'),180)",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "If Condition Have rows",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "UntilToday",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Copy data IP_Arsaker').output.rowsCopied,0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "FlowDelete_IPArsaker",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "FlowDelete_IPArsaker",
+									"type": "DataFlowReference"
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"DateFrom": {
+				"type": "String"
+			},
+			"DateTo": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-06-16T13:16:47Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

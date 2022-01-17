@@ -1,0 +1,19 @@
+{
+	"name": "RestMachine",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DitioMachine",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Ditio"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": ""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

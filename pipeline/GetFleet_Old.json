@@ -1,0 +1,309 @@
+{
+	"name": "GetFleet_Old",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get fleet from API",
+				"description": "Loops each page in the \"Fleet\" API and saves the data to SQL.\n\nTODO: \nWe need to make this dynamic. \nWe need to make sure we don't have duplicates for the combination SerialNumber + reading",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "SetFleetFetchArray",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('FleetArray')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "SaveFleetDataToSQL",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "GetToken",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "XmlSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET",
+										"additionalHeaders": {
+											"value": "X-IBM-Client-ID:78ff749ac089f3c1b86a2c3566e59677\nAuthorization:Bearer @{activity('GetToken').output.access_token}",
+											"type": "Expression"
+										},
+										"requestTimeout": ""
+									},
+									"formatSettings": {
+										"type": "XmlReadSettings",
+										"validationMode": "none",
+										"namespaces": true
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "['EquipmentHeader']['OEMName']"
+											},
+											"sink": {
+												"name": "EquimentHeader_OEMName",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EquipmentHeader']['Model']"
+											},
+											"sink": {
+												"name": "EquimentHeader_Model",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EquipmentHeader']['SerialNumber']"
+											},
+											"sink": {
+												"name": "EquimentHeader_SerialNumber",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['Latitude']"
+											},
+											"sink": {
+												"name": "Location_lat",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['Longitude']"
+											},
+											"sink": {
+												"name": "Location_lon",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['Location']['@datetime']"
+											},
+											"sink": {
+												"name": "Location_datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "['EngineStatus']['EngineNumber']"
+											},
+											"sink": {
+												"name": "EngineStatus_number",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EngineStatus']['Running']"
+											},
+											"sink": {
+												"name": "EngineStatus_running",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "['EngineStatus']['@datetime']"
+											},
+											"sink": {
+												"name": "EngineStatus_datetime",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Fleet']['@version']"
+											},
+											"sink": {
+												"name": "version",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Fleet']['@snapshotTime']"
+											},
+											"sink": {
+												"name": "snapshotTime",
+												"type": "DateTime"
+											}
+										}
+									],
+									"collectionReference": "$['Fleet']['Equipment']"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "GetFleet_XML",
+									"type": "DatasetReference",
+									"parameters": {
+										"Page": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VolvoCE_Fleet_SQL",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "GetToken",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://idp.prod.shared.eu.vgtng.volvo.com/identityprovider/oauth/token",
+								"method": "POST",
+								"headers": {
+									"Authorization": "Basic UmVudGFsT25lQVM6cHRhRVBmREh4NmJWdUY0VA==",
+									"Content-Type": "application/x-www-form-urlencoded"
+								},
+								"body": "grant_type=password&username=aemp2_user%40risa.no&password=abcd1234&scope=auto"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "GetFleetCount",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(DISTINCT(EquimentHeader_SerialNumber)) AS SIZE\n  FROM [dbo].[VolvoCE_Fleet]\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "VolvoCE_Fleet_SQL",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "SetFleetSize",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetFleetCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FleetCount",
+					"value": {
+						"value": "@string(activity('GetFleetCount').output.firstRow.SIZE)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SetFleetFetchArray",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SetFleetSize",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FleetArray",
+					"value": {
+						"value": "@range(1,max( if( equals(mod( add(int(variables('FleetCount')),1), 100), 0), int(div(add(int(variables('FleetCount')),1), 100)),  add(int(div(add(int(variables('FleetCount')),1), 100)), 1) ), 1))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Token": {
+				"type": "String"
+			},
+			"FleetCount": {
+				"type": "String"
+			},
+			"FleetArray": {
+				"type": "Array"
+			},
+			"Datetime_from": {
+				"type": "String",
+				"defaultValue": "2020-01-24T00:00:00Z"
+			},
+			"Datetime_to": {
+				"type": "String",
+				"defaultValue": "2020-01-24T23:59:59Z"
+			}
+		},
+		"folder": {
+			"name": "VolveCE Ditio Machine"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-11-26T15:00:56Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

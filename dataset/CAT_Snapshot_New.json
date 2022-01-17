@@ -1,0 +1,133 @@
+{
+	"name": "CAT_Snapshot_New",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Caterpillar"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EquipmentHeader.OEMName",
+				"type": "varchar"
+			},
+			{
+				"name": "EquipmentHeader.Model",
+				"type": "varchar"
+			},
+			{
+				"name": "EquipmentHeader.EquipmentID",
+				"type": "varchar"
+			},
+			{
+				"name": "EquipmentHeader.SerialNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "Location.Latitude",
+				"type": "varchar"
+			},
+			{
+				"name": "Location.Longitude",
+				"type": "varchar"
+			},
+			{
+				"name": "Location.Altitude",
+				"type": "varchar"
+			},
+			{
+				"name": "Location.AltitudeUnits",
+				"type": "varchar"
+			},
+			{
+				"name": "Location.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "CumulativeldleHours.Hour",
+				"type": "varchar"
+			},
+			{
+				"name": "CumulativeldleHours.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "CumulativeOperationHours.Hour",
+				"type": "varchar"
+			},
+			{
+				"name": "CumulativeOperationHours.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "DEFRemaining.Percent",
+				"type": "varchar"
+			},
+			{
+				"name": "DEFRemaining.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "Distance.OdometerUnits",
+				"type": "varchar"
+			},
+			{
+				"name": "Distance.Odometer",
+				"type": "varchar"
+			},
+			{
+				"name": "EngineStatus.EngineNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "EngineStatus.Running",
+				"type": "varchar"
+			},
+			{
+				"name": "EngineStatus.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelUsed.FuelUnits",
+				"type": "varchar"
+			},
+			{
+				"name": "Fuelused.FuelConsumed",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelUsed.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelUsedLast24.FuelUnits",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelUsedLast24.FuelConsumed",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelUsedLast24.Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelRemaining.Percent",
+				"type": "varchar"
+			},
+			{
+				"name": "FuelRemaining.Datetime",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "CAT_FleetSnapsShot_New"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

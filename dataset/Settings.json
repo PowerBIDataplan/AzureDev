@@ -1,0 +1,30 @@
+{
+	"name": "Settings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "System",
+				"type": "varchar"
+			},
+			{
+				"name": "Token",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Settings"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

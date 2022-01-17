@@ -1,0 +1,38 @@
+{
+	"name": "MergeMachine",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OEMName",
+				"type": "varchar"
+			},
+			{
+				"name": "Model",
+				"type": "varchar"
+			},
+			{
+				"name": "SerialNumber",
+				"type": "varchar"
+			},
+			{
+				"name": "ResourceNameFull",
+				"type": "varchar"
+			},
+			{
+				"name": "ResourceNumber",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MergeMachine"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

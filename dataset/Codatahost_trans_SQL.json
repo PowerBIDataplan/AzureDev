@@ -1,0 +1,157 @@
+{
+	"name": "Codatahost_trans_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "CoDataHost"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CardholderFirstName",
+				"type": "varchar"
+			},
+			{
+				"name": "CardholderLastName",
+				"type": "varchar"
+			},
+			{
+				"name": "CardSeriesDisplayName",
+				"type": "varchar"
+			},
+			{
+				"name": "CardType",
+				"type": "varchar"
+			},
+			{
+				"name": "CompanyTraceNo",
+				"type": "varchar"
+			},
+			{
+				"name": "Consumption",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerNo",
+				"type": "varchar"
+			},
+			{
+				"name": "ExportBatchNo",
+				"type": "varchar"
+			},
+			{
+				"name": "ExportBatchNoFleet",
+				"type": "varchar"
+			},
+			{
+				"name": "ForeignSiteID",
+				"type": "varchar"
+			},
+			{
+				"name": "ForeignSiteInfo",
+				"type": "varchar"
+			},
+			{
+				"name": "InvoiceDate",
+				"type": "varchar"
+			},
+			{
+				"name": "InvoiceNo",
+				"type": "varchar"
+			},
+			{
+				"name": "InvoiceSubTotalWithVAT",
+				"type": "varchar"
+			},
+			{
+				"name": "InvoiceUnitPrice",
+				"type": "varchar"
+			},
+			{
+				"name": "OdometerValue",
+				"type": "varchar"
+			},
+			{
+				"name": "PAN",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductPartNo",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductSystemProductNo",
+				"type": "varchar"
+			},
+			{
+				"name": "PumpAmount",
+				"type": "varchar"
+			},
+			{
+				"name": "PumpUnitPrice",
+				"type": "varchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "varchar"
+			},
+			{
+				"name": "Trip",
+				"type": "varchar"
+			},
+			{
+				"name": "ServerSubTotal",
+				"type": "varchar"
+			},
+			{
+				"name": "ServerTimestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ServerUnitPrice",
+				"type": "varchar"
+			},
+			{
+				"name": "SiteName",
+				"type": "varchar"
+			},
+			{
+				"name": "SiteNo",
+				"type": "varchar"
+			},
+			{
+				"name": "StockTankNo",
+				"type": "varchar"
+			},
+			{
+				"name": "TerminalNo",
+				"type": "varchar"
+			},
+			{
+				"name": "TerminalTimestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "TerminalTraceNo",
+				"type": "varchar"
+			},
+			{
+				"name": "VehicleNo",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Codatahost_trans"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

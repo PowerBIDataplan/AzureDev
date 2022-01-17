@@ -1,0 +1,45 @@
+{
+	"name": "GetOperatingHours_XML",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Volvo_CE_API",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Model": {
+				"type": "string"
+			},
+			"SerialNumber": {
+				"type": "string"
+			},
+			"DateTime_from": {
+				"type": "string"
+			},
+			"DateTime_to": {
+				"type": "string"
+			},
+			"OEM": {
+				"type": "string"
+			},
+			"Page": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"folder": {
+			"name": "Volvo CE"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@concat('cs/caretrack/aemp/Fleet/Equipment/MakeModelSerial/',dataset().OEM,'/',dataset().Model,'/',dataset().SerialNumber,'/CumulativeOperatingHours/',dataset().DateTime_from,'/',dataset().DateTime_to,'/',dataset().Page)",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

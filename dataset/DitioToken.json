@@ -1,0 +1,16 @@
+{
+	"name": "DitioToken",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DitioBase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "token"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

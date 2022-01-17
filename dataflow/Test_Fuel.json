@@ -1,0 +1,20 @@
+{
+	"name": "Test_Fuel",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "AzureSqlTable1",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureSqlTable1",
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared AzureSqlTable1 = let\r\n  AdfDoc = Sql.Database(\"bireports.database.windows.net\", \"RisaBiReports\", [CreateNavigationProperties = false]),\r\n  InputTable = AdfDoc{[Schema = \"dbo\", Item = \"Ditio\"]}[Data]\r\nin\r\n  InputTable;\r\nshared UserQuery = let\r\n  Source = AzureSqlTable1\r\nin\r\n  Source;\r\nshared Aktivitet_prosjekt_tid = let\r\n  Source = UserQuery,\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"ProjectNumber\", \"ResourceNumber\", \"StartDateTime\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Removed other columns\", \"T\", \" \", Replacer.ReplaceText, {\"StartDateTime\"}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"Z\", \"\", Replacer.ReplaceText, {\"StartDateTime\"}),\r\n  #\"Sorted rows\" = Table.Sort(#\"Replaced value 1\", {{\"ResourceNumber\", Order.Ascending}, {\"StartDateTime\", Order.Ascending}}),\r\n  #\"Changed column type\" = Table.TransformColumns(#\"Sorted rows\", {{\"StartDateTime\", each DateTime.FromText(_, [Format = \"yyyy-MM-dd HH:mm:ss\", Culture = \"nb-NO\"]), type datetime}}),\r\n  #\"Filtered rows\" = Table.SelectRows(#\"Changed column type\", each [ResourceNumber] <> null and [ResourceNumber] <> \"\")\r\nin\r\n  #\"Filtered rows\";\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}

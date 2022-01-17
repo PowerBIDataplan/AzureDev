@@ -1,0 +1,41 @@
+{
+	"name": "Tunnels",
+	"properties": {
+		"folder": {
+			"name": "Tunnels"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "JsonTunnels",
+						"type": "DatasetReference"
+					},
+					"name": "BlobStorage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Tunnels",
+						"type": "DatasetReference"
+					},
+					"name": "sinkTunnel"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DecodeJson"
+				},
+				{
+					"name": "ParseJson"
+				},
+				{
+					"name": "Tunnel"
+				}
+			],
+			"script": "parameters{\n\tHours as string,\n\tDay as string,\n\tMonth as string,\n\tYear as string\n}\nsource(output(\n\t\tEnqueuedTimeUtc as string,\n\t\tProperties as ({} as string),\n\t\tSystemProperties as (connectionDeviceId as string, connectionAuthMethod as string, connectionDeviceGenerationId as string, enqueuedTime as string),\n\t\tBody as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument',\n\twildcardPaths:[(concat(\"HUB-85757/00/\",$Year,\"/\",$Month,\"/\",$Day,\"/\",$Hours,\"/00.json\"))]) ~> BlobStorage\nBlobStorage derive(Body = fromBase64(Body)) ~> DecodeJson\nDecodeJson parse(Body_Parced = Body ? (Sensor1 as string,\n\t\tSensor2 as string,\n\t\tSensor3 as string,\n\t\tSensor4 as string,\n\t\tSensor5 as string,\n\t\tSensor6 as string,\n\t\tSensor7 as string,\n\t\tSensor8 as string,\n\t\tSensor9 as string,\n\t\tSensor10 as string,\n\t\tSensor11 as string,\n\t\tSensor12 as string,\n\t\ttime as string),\n\tformat: 'json',\n\tdocumentForm: 'singleDocument') ~> ParseJson\nParseJson derive(Tunnel = 'E18 Torsbuåstunnelen',\n\t\tDatoTunnel = concat('E18 Torsbuåstunnelen ' ,Body_Parced.time),\n\t\t{'Date'} = split(Body_Parced.time, ' ')[1],\n\t\tMin = greatest(Body_Parced.Sensor1,Body_Parced.Sensor2,Body_Parced.Sensor3,Body_Parced.Sensor4,Body_Parced.Sensor9,Body_Parced.Sensor10,Body_Parced.Sensor11,Body_Parced.Sensor12),\n\t\tAverage = toString((toInteger(Body_Parced.Sensor1) + toInteger(Body_Parced.Sensor2) + toInteger(Body_Parced.Sensor3) + toInteger(Body_Parced.Sensor4) + toInteger(Body_Parced.Sensor9) + toInteger(Body_Parced.Sensor10) + toInteger(Body_Parced.Sensor11) + toInteger(Body_Parced.Sensor12))/8),\n\t\tMax = least(Body_Parced.Sensor1,Body_Parced.Sensor2,Body_Parced.Sensor3,Body_Parced.Sensor4,Body_Parced.Sensor9,Body_Parced.Sensor10,Body_Parced.Sensor11,Body_Parced.Sensor12),\n\t\tSensorOn = toString( iif(toInteger(Body_Parced.Sensor1)>0,1,0) + iif(toInteger(Body_Parced.Sensor2)>0,1,0) + iif(toInteger(Body_Parced.Sensor3)>0,1,0) + iif(toInteger(Body_Parced.Sensor4)>0,1,0)\r\n+ iif(toInteger(Body_Parced.Sensor9)>0,1,0) + iif(toInteger(Body_Parced.Sensor10)>0,1,0) + iif(toInteger(Body_Parced.Sensor11)>0,1,0) + iif(toInteger(Body_Parced.Sensor12)>0,1,0))) ~> Tunnel\nTunnel sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tKey as string,\n\t\tDatetime as string,\n\t\tDate as string,\n\t\tTunnel as string,\n\t\tPc1 as string,\n\t\tPc2 as string,\n\t\tPc3 as string,\n\t\tPc4 as string,\n\t\tPc5 as string,\n\t\tPc6 as string,\n\t\tPc7 as string,\n\t\tPc8 as string,\n\t\tPc9 as string,\n\t\tPc10 as string,\n\t\tPc11 as string,\n\t\tPc12 as string,\n\t\tMin as string,\n\t\tMax as string,\n\t\tAverage as string,\n\t\tSensorOn as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tDatetime = Body_Parced.time,\n\t\tDate = {'Date'},\n\t\tTunnel,\n\t\tPc1 = Body_Parced.Sensor1,\n\t\tPc2 = Body_Parced.Sensor2,\n\t\tPc3 = Body_Parced.Sensor3,\n\t\tPc4 = Body_Parced.Sensor4,\n\t\tPc5 = Body_Parced.Sensor5,\n\t\tPc6 = Body_Parced.Sensor6,\n\t\tPc7 = Body_Parced.Sensor7,\n\t\tPc8 = Body_Parced.Sensor8,\n\t\tPc9 = Body_Parced.Sensor9,\n\t\tPc10 = Body_Parced.Sensor10,\n\t\tPc11 = Body_Parced.Sensor11,\n\t\tPc12 = Body_Parced.Sensor12,\n\t\tMin = Max,\n\t\tMax = Min,\n\t\tAverage,\n\t\tSensorOn,\n\t\tKey = DatoTunnel\n\t)) ~> sinkTunnel"
+		}
+	}
+}

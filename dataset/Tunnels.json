@@ -1,0 +1,98 @@
+{
+	"name": "Tunnels",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ditio",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Key",
+				"type": "varchar"
+			},
+			{
+				"name": "Datetime",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "varchar"
+			},
+			{
+				"name": "Tunnel",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc1",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc2",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc3",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc4",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc5",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc6",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc7",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc8",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc9",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc10",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc11",
+				"type": "varchar"
+			},
+			{
+				"name": "Pc12",
+				"type": "varchar"
+			},
+			{
+				"name": "Min",
+				"type": "varchar"
+			},
+			{
+				"name": "Max",
+				"type": "varchar"
+			},
+			{
+				"name": "Average",
+				"type": "varchar"
+			},
+			{
+				"name": "SensorOn",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Tunnels"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

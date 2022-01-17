@@ -24,12 +24,6 @@
 			},
 			{
 				"pipelineReference": {
-					"referenceName": "Aktivitet_prosjekt_tid",
-					"type": "PipelineReference"
-				}
-			},
-			{
-				"pipelineReference": {
 					"referenceName": "AllFuel",
 					"type": "PipelineReference"
 				}

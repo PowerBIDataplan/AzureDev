@@ -21,12 +21,6 @@
 					"referenceName": "IPArsakerUpdate",
 					"type": "PipelineReference"
 				}
-			},
-			{
-				"pipelineReference": {
-					"referenceName": "AllFuel",
-					"type": "PipelineReference"
-				}
 			}
 		],
 		"type": "ScheduleTrigger",

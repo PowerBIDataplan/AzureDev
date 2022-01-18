@@ -5,14 +5,7 @@
 			{
 				"name": "VismaPages",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "ForEach1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "1.00:00:00",
 					"retry": 0,
@@ -118,7 +111,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "RestSource",
-									"httpRequestTimeout": "00:10:00",
+									"httpRequestTimeout": "00:06:00",
 									"requestInterval": "00.00:00:00.002",
 									"requestMethod": "GET",
 									"additionalHeaders": {
@@ -257,7 +250,7 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"waitTimeInSeconds": 150
+								"waitTimeInSeconds": 120
 							}
 						}
 					],
@@ -306,9 +299,43 @@
 				}
 			},
 			{
+				"name": "UpdateItemPIM",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DeleteDuplicates",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[UpdatePIMcoreItemStock]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
 				"name": "Lookup1",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "UpdateItemPIM",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -375,33 +402,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "UpdateItemPIM",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "DeleteDuplicates",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[UpdatePIMcoreItemStock]"
-				},
-				"linkedServiceName": {
-					"referenceName": "ExtraLeker",
-					"type": "LinkedServiceReference"
-				}
 			}
 		],
 		"variables": {
@@ -410,7 +410,7 @@
 			},
 			"Page": {
 				"type": "String",
-				"defaultValue": "27"
+				"defaultValue": "1"
 			},
 			"Help": {
 				"type": "String"

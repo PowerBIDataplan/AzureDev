@@ -141,20 +141,20 @@
 										},
 										{
 											"source": {
-												"path": "$['lastCost']"
-											},
-											"sink": {
-												"name": "DefaultPrice",
-												"type": "Double"
-											}
-										},
-										{
-											"source": {
 												"path": "$['description']"
 											},
 											"sink": {
 												"name": "Description",
 												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['lastCost']"
+											},
+											"sink": {
+												"name": "DefaultPrice",
+												"type": "Double"
 											}
 										},
 										{
@@ -168,14 +168,25 @@
 										},
 										{
 											"source": {
-												"path": "$['stockItem']"
+												"path": "$['crossReferences'][0]['alternateID']"
+											},
+											"sink": {
+												"name": "CrossReferenceAlternateID",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['warehouseDetails'][0]['available']"
 											},
 											"sink": {
 												"name": "IteminStock",
 												"type": "String"
 											}
 										}
-									]
+									],
+									"collectionReference": "$['itemClass']['attributes']",
+									"mapComplexValuesToString": true
 								}
 							},
 							"inputs": [

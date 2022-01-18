@@ -421,7 +421,7 @@
 			},
 			"Page": {
 				"type": "String",
-				"defaultValue": "1"
+				"defaultValue": "18"
 			},
 			"Help": {
 				"type": "String"

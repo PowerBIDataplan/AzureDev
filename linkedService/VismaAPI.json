@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://integration.visma.net/API/controller/api/v1/",
+			"url": "https://integration.visma.net/API/controller/api/v1/inventory?pageNumber=1&pageSize=1",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}

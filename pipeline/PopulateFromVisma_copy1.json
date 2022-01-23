@@ -1,11 +1,18 @@
 {
-	"name": "PopulateFromVisma",
+	"name": "PopulateFromVisma_copy1",
 	"properties": {
 		"activities": [
 			{
 				"name": "VismaPages",
 				"type": "ExecuteDataFlow",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "NumberItems",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "1.00:00:00",
 					"retry": 0,
@@ -17,7 +24,19 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "VismaPages",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"ItemNumber": {
+								"value": "@int(variables('NumberItems'))",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"PimcorePages": {
+								"Page": "1",
+								"PageSize": "1"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -255,149 +274,13 @@
 				}
 			},
 			{
-				"name": "DeleteDuplicates",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "Until1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
+				"name": "NumberItems",
+				"type": "SetVariable",
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[DeleteDuplicates]",
-					"storedProcedureParameters": {
-						"field1": {
-							"value": "ItemSKU",
-							"type": "String"
-						},
-						"field2": {
-							"value": "IteminStock",
-							"type": "String"
-						},
-						"tblName": {
-							"value": "dbo.VismaExtraTest",
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "ExtraLeker",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "UpdateItemPIM",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "DeleteDuplicates",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[UpdatePIMcoreItemStock]"
-				},
-				"linkedServiceName": {
-					"referenceName": "ExtraLeker",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Lookup1",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "UpdateItemPIM",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT *\n  FROM [dbo].[Pimcore]\n  WHERE ItemInStock IS NOT NULL",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "ExtraTest",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "Lookup1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('Lookup1').output.value",
-						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "UpdateItemInStockPIM",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"url": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532",
-								"method": "POST",
-								"headers": {
-									"Content-Type": "application/json"
-								},
-								"body": {
-									"value": "@concat('{\"query\":\"mutation {\\r\\n  updateProdukt(id:',item().ID,', input: {ItemInStock:true}) {\\r\\n    success\\r\\n    message\\r\\n  }\\r\\n}\",\"variables\":{}}')",
-									"type": "Expression"
-								}
-							}
-						}
-					]
+					"variableName": "NumberItems",
+					"value": "300"
 				}
 			}
 		],
@@ -410,6 +293,9 @@
 				"defaultValue": "26"
 			},
 			"Help": {
+				"type": "String"
+			},
+			"NumberItems": {
 				"type": "String"
 			}
 		},

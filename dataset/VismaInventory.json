@@ -1,0 +1,26 @@
+{
+	"name": "VismaInventory",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "VismaAPI",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Page": {
+				"type": "string"
+			},
+			"PageSize": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat('inventory?pageNumber=',dataset().Page,'&pageSize=',dataset().PageSize,'')",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}

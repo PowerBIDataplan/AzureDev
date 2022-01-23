@@ -1,5 +1,5 @@
 {
-	"name": "VismaInventory",
+	"name": "VismaPages",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "VismaAPI",

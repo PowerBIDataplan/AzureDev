@@ -1,0 +1,26 @@
+{
+	"name": "VismaInventory",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "VismaBase",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Page": {
+				"type": "string"
+			},
+			"NumberItem": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat('inventory?pageNumber=',dataset().Page,'&pageSize=',dataset().NumberItem,'')",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}

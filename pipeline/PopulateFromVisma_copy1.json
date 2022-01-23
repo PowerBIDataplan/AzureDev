@@ -200,6 +200,18 @@
 									]
 								}
 							},
+							"inputs": [
+								{
+									"referenceName": "VismaInventory",
+									"type": "DatasetReference",
+									"parameters": {
+										"Page": {
+											"value": "@variables('Page')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
 							"outputs": [
 								{
 									"referenceName": "VismaDB",

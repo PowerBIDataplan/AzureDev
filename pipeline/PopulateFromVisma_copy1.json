@@ -208,6 +208,10 @@
 										"Page": {
 											"value": "@variables('Page')",
 											"type": "Expression"
+										},
+										"NumberItem": {
+											"value": "@variables('NumberItems')",
+											"type": "Expression"
 										}
 									}
 								}
@@ -257,22 +261,6 @@
 									"value": "@variables('Help')",
 									"type": "Expression"
 								}
-							}
-						},
-						{
-							"name": "Wait1",
-							"type": "Wait",
-							"dependsOn": [
-								{
-									"activity": "Set variable Page",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"waitTimeInSeconds": 120
 							}
 						}
 					],

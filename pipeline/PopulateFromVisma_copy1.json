@@ -30,12 +30,6 @@
 								"value": "@int(variables('NumberItems'))",
 								"type": "Expression"
 							}
-						},
-						"datasetParameters": {
-							"PimcorePages": {
-								"Page": "1",
-								"PageSize": "1"
-							}
 						}
 					},
 					"compute": {

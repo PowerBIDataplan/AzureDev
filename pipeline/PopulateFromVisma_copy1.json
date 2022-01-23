@@ -27,7 +27,7 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"ItemNumber": {
-								"value": "@int(variables('NumberItems'))",
+								"value": "'@{variables('NumberItems')}'",
 								"type": "Expression"
 							}
 						}

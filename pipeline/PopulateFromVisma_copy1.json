@@ -274,7 +274,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "NumberItems",
-					"value": "300"
+					"value": "100"
 				}
 			}
 		],

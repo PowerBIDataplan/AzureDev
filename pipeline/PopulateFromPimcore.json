@@ -130,7 +130,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'ExtraTest';",
+						"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'ExtraTest' AND TotalCount IS NULL;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},

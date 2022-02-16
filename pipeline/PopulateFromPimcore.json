@@ -17,6 +17,12 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
+						"additionalColumns": [
+							{
+								"name": "TableName",
+								"value": "ExtraTest"
+							}
+						],
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
@@ -26,7 +32,16 @@
 						}
 					},
 					"sink": {
-						"type": "AzureSqlSink"
+						"type": "AzureSqlSink",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"TableName"
+							]
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -39,6 +54,15 @@
 								"sink": {
 									"name": "TotalCount",
 									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['TableName']"
+								},
+								"sink": {
+									"name": "TableName",
+									"type": "String"
 								}
 							}
 						]
@@ -56,37 +80,6 @@
 						"type": "DatasetReference"
 					}
 				]
-			},
-			{
-				"name": "PimcorePages",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "GetPimcoreTotalCount",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "1.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "PimcorePages",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"traceLevel": "Fine"
-				}
 			},
 			{
 				"name": "SetTotalPages",
@@ -113,7 +106,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "PimcorePages",
+						"activity": "Update Pages",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -130,7 +123,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'ExtraTest' AND TotalCount IS NULL;",
+						"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'ExtraTest';",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -374,6 +367,43 @@
 							"type": "String"
 						},
 						"tblName": {
+							"value": "ExtraTest",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Update Pages",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "GetPimcoreTotalCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[InsertPages]",
+					"storedProcedureParameters": {
+						"PageNumber": {
+							"value": "5000",
+							"type": "Int32"
+						},
+						"TableName": {
 							"value": "ExtraTest",
 							"type": "String"
 						}

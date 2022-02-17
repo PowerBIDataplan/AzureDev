@@ -100,7 +100,16 @@
 									}
 								},
 								"sink": {
-									"type": "AzureSqlSink"
+									"type": "AzureSqlSink",
+									"writeBehavior": "upsert",
+									"upsertSettings": {
+										"useTempDB": true,
+										"keys": [
+											"ItemSKU"
+										]
+									},
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
 								},
 								"enableStaging": false,
 								"translator": {
@@ -126,15 +135,6 @@
 										},
 										{
 											"source": {
-												"path": "$['lastCost']"
-											},
-											"sink": {
-												"name": "DefaultPrice",
-												"type": "Double"
-											}
-										},
-										{
-											"source": {
 												"path": "$['lastModifiedDateTime']"
 											},
 											"sink": {
@@ -144,11 +144,20 @@
 										},
 										{
 											"source": {
-												"path": "$['crossReferences'][0]['alternateID']"
+												"path": "$['costPriceStatistics']['lastCost']"
 											},
 											"sink": {
-												"name": "CrossReferenceAlternateID",
-												"type": "String"
+												"name": "LastCostPrice",
+												"type": "Double"
+											}
+										},
+										{
+											"source": {
+												"path": "$['costPriceStatistics']['averageCost']"
+											},
+											"sink": {
+												"name": "AverageCostPrice",
+												"type": "Double"
 											}
 										},
 										{
@@ -166,7 +175,14 @@
 							"inputs": [
 								{
 									"referenceName": "VismaInventory",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"Page": {
+											"value": "@variables('Page')",
+											"type": "Expression"
+										},
+										"NumberItem": "5000"
+									}
 								}
 							],
 							"outputs": [
@@ -214,22 +230,6 @@
 									"value": "@variables('Help')",
 									"type": "Expression"
 								}
-							}
-						},
-						{
-							"name": "Wait1",
-							"type": "Wait",
-							"dependsOn": [
-								{
-									"activity": "Set variable Page",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"waitTimeInSeconds": 120
 							}
 						}
 					],

@@ -179,7 +179,6 @@
 								},
 								"sink": {
 									"type": "AzureSqlSink",
-									"preCopyScript": "TRUNCATE TABLE dbo.Extratest ",
 									"writeBehavior": "insert",
 									"sqlWriterUseTableLock": false,
 									"disableMetricsCollection": false

@@ -178,7 +178,11 @@
 									}
 								},
 								"sink": {
-									"type": "AzureSqlSink"
+									"type": "AzureSqlSink",
+									"preCopyScript": "TRUNCATE TABLE dbo.Extratest ",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
 								},
 								"enableStaging": false,
 								"translator": {
@@ -334,47 +338,6 @@
 						}
 					],
 					"timeout": "7.00:00:00"
-				}
-			},
-			{
-				"name": "Procedure_DeleteDuplicates",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "Until1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[DeleteDuplicates]",
-					"storedProcedureParameters": {
-						"field1": {
-							"value": "PimcoreID",
-							"type": "String"
-						},
-						"field2": {
-							"value": "ItemSKU",
-							"type": "String"
-						},
-						"tblName": {
-							"value": "ExtraTest",
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "ExtraLeker",
-					"type": "LinkedServiceReference"
 				}
 			},
 			{

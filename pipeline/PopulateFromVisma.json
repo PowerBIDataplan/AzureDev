@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Copy data",
+						"activity": "Stored procedure1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -417,10 +417,37 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['metadata']['totalCount']"
+								},
+								"sink": {
+									"name": "TotalCount",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['TableName']"
+								},
+								"sink": {
+									"name": "TableName",
+									"type": "String"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
@@ -438,6 +465,43 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[InsertPages]",
+					"storedProcedureParameters": {
+						"PageNumber": {
+							"value": "5000",
+							"type": "Int32"
+						},
+						"TableName": {
+							"value": "VismaExtraTest",
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"variables": {

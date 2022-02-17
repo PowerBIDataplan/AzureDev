@@ -510,7 +510,7 @@
 			},
 			"Page": {
 				"type": "String",
-				"defaultValue": "26"
+				"defaultValue": "1"
 			},
 			"Help": {
 				"type": "String"

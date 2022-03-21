@@ -1,0 +1,429 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "WilmaDeveloper"
+		},
+		"AzureBlobStorageTunnels_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageTunnels'"
+		},
+		"Codatahost_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Codatahost'"
+		},
+		"Ditio_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Ditio'"
+		},
+		"ExtraLeker_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ExtraLeker'"
+		},
+		"FtpServerTunnel_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FtpServerTunnel'"
+		},
+		"HttpVolvoTruck_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'HttpVolvoTruck'"
+		},
+		"SQLMachine_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SQLMachine'"
+		},
+		"Codatahost_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.codatahost.com/mons2/v1/cmp/330/"
+		},
+		"Codatahost_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "lars.nygard@risa.no"
+		},
+		"DitioBase_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-ids-we.azurewebsites.net/connect/"
+		},
+		"DitioConnectionAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-api-v3.azurewebsites.net/api/reporting/external-report"
+		},
+		"DitioMachine_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-api-v3.azurewebsites.net/api/machine?userMachineOnly=false&activeOnly=false"
+		},
+		"DitioMassConnecitonAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-report-api.azurewebsites.net/api/mass-transport-report/mass-transport-report"
+		},
+		"DitioV3_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-api-v3.azurewebsites.net/api/"
+		},
+		"FtpServerTunnel_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "10.0.0.52"
+		},
+		"FtpServerTunnel_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "tunnel01"
+		},
+		"HttpVolvoTruck_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvotrucks.com/"
+		},
+		"HttpVolvoTruck_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "24A0F7A8CA"
+		},
+		"Pimcore_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532"
+		},
+		"PimcoreRest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532"
+		},
+		"Rest_Caterpillar_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://services.cat.com/telematics/iso15143/fleet/"
+		},
+		"RisaIP_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://app.qatip.no"
+		},
+		"Visma_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1"
+		},
+		"VismaAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1/inventory?pageNumber=1&pageSize=1"
+		},
+		"VismaBase_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1/"
+		},
+		"Vismanet_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageTunnels')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorageTunnels_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Codatahost')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('Codatahost_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('Codatahost_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Codatahost_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Ditio')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('Ditio_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DitioBase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('DitioBase_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DitioConnectionAPI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('DitioConnectionAPI_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DitioMachine')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('DitioMachine_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DitioMassConnecitonAPI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('DitioMassConnecitonAPI_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DitioV3')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('DitioV3_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtraLeker')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ExtraLeker_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FtpServerTunnel')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FtpServer",
+				"typeProperties": {
+					"host": "[parameters('FtpServerTunnel_properties_typeProperties_host')]",
+					"port": 21,
+					"enableSsl": true,
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Basic",
+					"userName": "[parameters('FtpServerTunnel_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('FtpServerTunnel_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpVolvoTruck')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpVolvoTruck_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Basic",
+					"userName": "[parameters('HttpVolvoTruck_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('HttpVolvoTruck_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Pimcore')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('Pimcore_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PimcoreRest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('PimcoreRest_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Rest_Caterpillar')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Rest_Caterpillar_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RisaIP')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RisaIP_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLMachine')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('SQLMachine_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Visma')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Visma_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VismaAPI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('VismaAPI_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VismaBase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('VismaBase_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Vismanet')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('Vismanet_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

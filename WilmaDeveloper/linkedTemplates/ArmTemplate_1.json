@@ -1,0 +1,1548 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "WilmaDeveloper"
+		},
+		"connectionRisaDitio_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'connectionRisaDitio'"
+		},
+		"VolvoCE_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvo.com/vce/"
+		},
+		"VolvoTrucks_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvotrucks.com"
+		},
+		"Volvo_CE_API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvo.com/vce/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/VolvoCE')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('VolvoCE_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VolvoTrucks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('VolvoTrucks_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Volvo_CE_API')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('Volvo_CE_API_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/connectionRisaDitio')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('connectionRisaDitio_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Ditio810')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2021-11-09T07:02:00",
+						"timeZone": "Romance Standard Time",
+						"schedule": {
+							"minutes": [
+								10
+							],
+							"hours": [
+								8
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Every_ 5hours')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 6,
+						"startTime": "2021-09-27T01:10:00",
+						"timeZone": "Romance Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetVolvoCE_daily')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2020-08-24T06:00:00",
+						"timeZone": "W. Europe Standard Time",
+						"schedule": {
+							"minutes": [
+								0
+							],
+							"hours": [
+								6
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VolvoCE_simple_daily')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2021-02-27T05:30:00Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								5
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BulkPostInventory')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Vismanet",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "inventory"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ExtraTest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Extra Leker DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "PimcoreID",
+						"type": "varchar"
+					},
+					{
+						"name": "ItemSKU",
+						"type": "varchar"
+					},
+					{
+						"name": "Description",
+						"type": "varchar"
+					},
+					{
+						"name": "ItemOfferPrice",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ItemVAT",
+						"type": "varchar"
+					},
+					{
+						"name": "ItemCostPrice",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ItemSalePrice",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "EnableWebShop",
+						"type": "varchar"
+					},
+					{
+						"name": "PrimaryBarcode",
+						"type": "varchar"
+					},
+					{
+						"name": "SecondaryBarcode",
+						"type": "varchar"
+					},
+					{
+						"name": "VismaModificationDate",
+						"type": "varchar"
+					},
+					{
+						"name": "PIMmodificationDate",
+						"type": "varchar"
+					},
+					{
+						"name": "UpdateDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ItemInStock",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "ExtraTest"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PagesPimcore')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Extra Leker DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "TableName",
+						"type": "varchar"
+					},
+					{
+						"name": "TotalCount",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "TotalPages",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Pages"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PimcoreDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Extra Leker DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ItemSKU",
+						"type": "varchar"
+					},
+					{
+						"name": "Cost",
+						"type": "varchar"
+					},
+					{
+						"name": "BarCodePrincipal",
+						"type": "varchar"
+					},
+					{
+						"name": "BarCodeSecondary",
+						"type": "varchar"
+					},
+					{
+						"name": "BarCodePrin_Update",
+						"type": "varchar"
+					},
+					{
+						"name": "BarCodeSec_Update",
+						"type": "varchar"
+					},
+					{
+						"name": "Supplier",
+						"type": "varchar"
+					},
+					{
+						"name": "Updated",
+						"type": "varchar"
+					},
+					{
+						"name": "ItemInStock",
+						"type": "varchar"
+					},
+					{
+						"name": "ItemSalePrice",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Pimcore"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PimcoreJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Pimcore",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Pimcore"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PimcoreRest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "PimcoreRest",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Pimcore"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VismaDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ExtraLeker",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Extra Leker DB"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ItemSKU",
+						"type": "varchar"
+					},
+					{
+						"name": "Description",
+						"type": "varchar"
+					},
+					{
+						"name": "DefaultPrice",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "modificationDate",
+						"type": "varchar"
+					},
+					{
+						"name": "IteminStock",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "VismaExtraTest"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VismaInventory')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "VismaBase",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Page": {
+						"type": "string"
+					},
+					"NumberItem": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@concat('inventory?pageNumber=',dataset().Page,'&pageSize=',dataset().NumberItem,'&ft=1&ft=1&addCostPriceStatistics=true')",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VismaPages')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "VismaAPI",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PopulateFromPimcore')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetPimcoreTotalCount",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"additionalColumns": [
+									{
+										"name": "TableName",
+										"value": "ExtraTest"
+									}
+								],
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "POST",
+								"requestBody": "{\"query\":\"  query{ getProduktListing(first: 1, after: 0){\\r\\n      totalCount\\r\\n\\r\\n    \\r\\n  }\\r\\n}\",\"variables\":{}}",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"TableName"
+									]
+								},
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['data']['getProduktListing']['totalCount']"
+										},
+										"sink": {
+											"name": "TotalCount",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['TableName']"
+										},
+										"sink": {
+											"name": "TableName",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "PimcoreRest",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "PagesPimcore",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "SetTotalPages",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "LookTotalPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Pages",
+							"value": {
+								"value": "@string(activity('LookTotalPages').output.firstRow.TotalCount)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "LookTotalPages",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Update Pages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'ExtraTest';",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "PagesPimcore",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "SetTotalPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greaterOrEquals(int(variables('currentPage')),int(variables('Pages')))",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Products",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:01:40",
+											"requestInterval": "00.00:00:00.010",
+											"requestMethod": "POST",
+											"requestBody": {
+												"value": "@concat('{\"query\":\"  query{ getProduktListing(first: ',variables('Page'), ', after: ',variables('currentPage'),'){\\r\\n       edges  { \\r\\n          node{\\r\\n              id \\r\\n              ItemSKU \\r\\n              ItemName \\r\\n              ItemSalePrice \\r\\n              modificationDate \\r\\n              ItemOfferPrice \\r\\n              ItemVAT \\r\\n              ItemCostPrice \\r\\n              ItemSalePrice \\r\\n              EnableWebshop \\r\\n              ItemSalePrice \\r\\n              ItemOfferPrice\\r\\n              # Primary barcode \\r\\n              ItemBarcodePrimary\\r\\n              # Additional barcodes (alternative) if exists\\r\\n              ItemBarcodes {\\r\\n              ... on fieldcollection_Barcode {\\r\\n              Barcode\\r\\n    }\\r\\n  }\\r\\n\\r\\n        }\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}')",
+												"type": "Expression"
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false,
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "[['node']['id']"
+													},
+													"sink": {
+														"name": "PimcoreID",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemSKU']"
+													},
+													"sink": {
+														"name": "ItemSKU",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemName']"
+													},
+													"sink": {
+														"name": "Description",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemSalePrice']"
+													},
+													"sink": {
+														"name": "ItemSalePrice",
+														"type": "Double"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['modificationDate']"
+													},
+													"sink": {
+														"name": "PIMmodificationDate",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemOfferPrice']"
+													},
+													"sink": {
+														"name": "ItemOfferPrice",
+														"type": "Double"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemVAT']"
+													},
+													"sink": {
+														"name": "ItemVAT",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['EnableWebshop']"
+													},
+													"sink": {
+														"name": "EnableWebShop",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemBarcodePrimary']"
+													},
+													"sink": {
+														"name": "PrimaryBarcode",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "[['node']['ItemBarcodes']"
+													},
+													"sink": {
+														"name": "SecondaryBarcode",
+														"type": "String"
+													}
+												}
+											],
+											"collectionReference": "$['data']['getProduktListing']['edges']",
+											"mapComplexValuesToString": true
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "PimcoreRest",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ExtraTest",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Add 5000-Help",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Products",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Help",
+										"value": {
+											"value": "@string(add(int(variables('currentPage')),5000))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Add 5000 - CurrentPage",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Add 5000-Help",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "currentPage",
+										"value": {
+											"value": "@variables('Help')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "Update Pages",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "GetPimcoreTotalCount",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[InsertPages]",
+							"storedProcedureParameters": {
+								"PageNumber": {
+									"value": "5000",
+									"type": "Int32"
+								},
+								"TableName": {
+									"value": "ExtraTest",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ExtraLeker",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Pages": {
+						"type": "String"
+					},
+					"Page": {
+						"type": "String",
+						"defaultValue": "5000"
+					},
+					"currentPage": {
+						"type": "String",
+						"defaultValue": "0"
+					},
+					"Help": {
+						"type": "String",
+						"defaultValue": "0"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/PimcoreRest')]",
+				"[concat(variables('factoryId'), '/datasets/PagesPimcore')]",
+				"[concat(variables('factoryId'), '/datasets/ExtraTest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PopulateFromVisma')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup total pages",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Stored procedure1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'VismaExtraTest';",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "PagesPimcore",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Set TotalPages",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Lookup total pages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TotalPages",
+							"value": {
+								"value": "@string(activity('Lookup total pages').output.firstRow.TotalPages)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "Set TotalPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greaterOrEquals(int(variables('Page')), int(variables('TotalPages')))",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "VismaInventory",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:06:00",
+											"requestInterval": "00.00:00:00.002",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"ipp-application-type": "Visma.net Financials",
+												"ipp-company-id": "3464226",
+												"Authorization": "Bearer c5b7d8ba-4cf8-4312-a520-6709738cae9c"
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "upsert",
+											"upsertSettings": {
+												"useTempDB": true,
+												"keys": [
+													"ItemSKU"
+												]
+											},
+											"sqlWriterUseTableLock": false,
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "$['inventoryNumber']"
+													},
+													"sink": {
+														"name": "ItemSKU",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['description']"
+													},
+													"sink": {
+														"name": "Description",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['lastModifiedDateTime']"
+													},
+													"sink": {
+														"name": "modificationDate",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['costPriceStatistics']['lastCost']"
+													},
+													"sink": {
+														"name": "LastCostPrice",
+														"type": "Double"
+													}
+												},
+												{
+													"source": {
+														"path": "$['costPriceStatistics']['averageCost']"
+													},
+													"sink": {
+														"name": "AverageCostPrice",
+														"type": "Double"
+													}
+												},
+												{
+													"source": {
+														"path": "$['warehouseDetails'][0]['available']"
+													},
+													"sink": {
+														"name": "IteminStock",
+														"type": "String"
+													}
+												}
+											]
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "VismaInventory",
+											"type": "DatasetReference",
+											"parameters": {
+												"Page": {
+													"value": "@variables('Page')",
+													"type": "Expression"
+												},
+												"NumberItem": "5000"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "VismaDB",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Set variable Help",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "VismaInventory",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Help",
+										"value": {
+											"value": "@string(add(int(variables('Page')),1))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set variable Page",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Set variable Help",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Page",
+										"value": {
+											"value": "@variables('Help')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "Copy data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"additionalColumns": [
+									{
+										"name": "TableName",
+										"value": "VismaExtraTest"
+									}
+								],
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"ipp-application-type": "Visma.net Financials",
+									"ipp-company-id": "3464226",
+									"Authorization": "Bearer c5b7d8ba-4cf8-4312-a520-6709738cae9c"
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"TableName"
+									]
+								},
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['metadata']['totalCount']"
+										},
+										"sink": {
+											"name": "TotalCount",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['TableName']"
+										},
+										"sink": {
+											"name": "TableName",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "VismaInventory",
+								"type": "DatasetReference",
+								"parameters": {
+									"Page": "1",
+									"NumberItem": "1"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "PagesPimcore",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Stored procedure1",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Copy data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[InsertPages]",
+							"storedProcedureParameters": {
+								"PageNumber": {
+									"value": "5000",
+									"type": "Int32"
+								},
+								"TableName": {
+									"value": "VismaExtraTest",
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ExtraLeker",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"TotalPages": {
+						"type": "String"
+					},
+					"Page": {
+						"type": "String",
+						"defaultValue": "1"
+					},
+					"Help": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/PagesPimcore')]",
+				"[concat(variables('factoryId'), '/datasets/VismaInventory')]",
+				"[concat(variables('factoryId'), '/datasets/VismaDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ToVismaNet')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "SetPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(int(variables('Current Page ')),int(variables('Pages')))",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "VismaExtraTest",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT TOP(5) ItemSKU, Description, IteminStock, LastCostPrice, AverageCostPrice, RowNum FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY ItemSKU) As RowNum FROM [dbo].[VismaExtraTest]) AS FullTable WHERE RowNum >',variables('Limit') )",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "ExtraTest",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": false
+									}
+								},
+								{
+									"name": "ForEach1",
+									"type": "ForEach",
+									"dependsOn": [
+										{
+											"activity": "VismaExtraTest",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@activity('VismaExtraTest').output.value",
+											"type": "Expression"
+										},
+										"activities": [
+											{
+												"name": "SetTest",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "Test",
+													"value": {
+														"value": "@item().ItemSKU",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "IncrementPage",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "ForEach1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageIncrement",
+										"value": {
+											"value": "@string(add(int(variables('Current Page ')),1))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "SetNewPage",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "IncrementPage",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Current Page ",
+										"value": {
+											"value": "@variables('PageIncrement')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "Total",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT count(*) AS TOTAL \nFROM dbo.VismaExtraTest ",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ExtraTest",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "SetPages",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Total",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Pages",
+							"value": {
+								"value": "@string(div(activity('Total').output.firstRow.TOTAL,5000))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Limit": {
+						"type": "String",
+						"defaultValue": "0"
+					},
+					"Pages": {
+						"type": "String"
+					},
+					"Current Page ": {
+						"type": "String",
+						"defaultValue": "1"
+					},
+					"Test": {
+						"type": "String"
+					},
+					"PageIncrement": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ExtraTest')]"
+			]
+		}
+	]
+}

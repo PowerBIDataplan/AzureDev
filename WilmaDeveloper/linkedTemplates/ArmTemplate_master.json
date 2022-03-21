@@ -1,0 +1,292 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "WilmaDeveloper"
+		},
+		"AzureBlobStorageTunnels_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageTunnels'"
+		},
+		"Codatahost_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Codatahost'"
+		},
+		"Ditio_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Ditio'"
+		},
+		"ExtraLeker_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ExtraLeker'"
+		},
+		"FtpServerTunnel_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'FtpServerTunnel'"
+		},
+		"HttpVolvoTruck_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'HttpVolvoTruck'"
+		},
+		"SQLMachine_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SQLMachine'"
+		},
+		"connectionRisaDitio_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'connectionRisaDitio'"
+		},
+		"Codatahost_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.codatahost.com/mons2/v1/cmp/330/"
+		},
+		"Codatahost_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "lars.nygard@risa.no"
+		},
+		"DitioBase_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-ids-we.azurewebsites.net/connect/"
+		},
+		"DitioConnectionAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-api-v3.azurewebsites.net/api/reporting/external-report"
+		},
+		"DitioMachine_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-api-v3.azurewebsites.net/api/machine?userMachineOnly=false&activeOnly=false"
+		},
+		"DitioMassConnecitonAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-report-api.azurewebsites.net/api/mass-transport-report/mass-transport-report"
+		},
+		"DitioV3_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ditio-api-v3.azurewebsites.net/api/"
+		},
+		"FtpServerTunnel_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "10.0.0.52"
+		},
+		"FtpServerTunnel_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "tunnel01"
+		},
+		"HttpVolvoTruck_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvotrucks.com/"
+		},
+		"HttpVolvoTruck_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "24A0F7A8CA"
+		},
+		"Pimcore_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532"
+		},
+		"PimcoreRest_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532"
+		},
+		"Rest_Caterpillar_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://services.cat.com/telematics/iso15143/fleet/"
+		},
+		"RisaIP_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://app.qatip.no"
+		},
+		"Visma_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1"
+		},
+		"VismaAPI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1/inventory?pageNumber=1&pageSize=1"
+		},
+		"VismaBase_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1/"
+		},
+		"Vismanet_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://integration.visma.net/API/controller/api/v1/"
+		},
+		"VolvoCE_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvo.com/vce/"
+		},
+		"VolvoTrucks_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvotrucks.com"
+		},
+		"Volvo_CE_API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.volvo.com/vce/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "WilmaDeveloper_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorageTunnels_connectionString": {
+						"value": "[parameters('AzureBlobStorageTunnels_connectionString')]"
+					},
+					"Codatahost_password": {
+						"value": "[parameters('Codatahost_password')]"
+					},
+					"Ditio_connectionString": {
+						"value": "[parameters('Ditio_connectionString')]"
+					},
+					"ExtraLeker_connectionString": {
+						"value": "[parameters('ExtraLeker_connectionString')]"
+					},
+					"FtpServerTunnel_password": {
+						"value": "[parameters('FtpServerTunnel_password')]"
+					},
+					"HttpVolvoTruck_password": {
+						"value": "[parameters('HttpVolvoTruck_password')]"
+					},
+					"SQLMachine_connectionString": {
+						"value": "[parameters('SQLMachine_connectionString')]"
+					},
+					"Codatahost_properties_typeProperties_url": {
+						"value": "[parameters('Codatahost_properties_typeProperties_url')]"
+					},
+					"Codatahost_properties_typeProperties_userName": {
+						"value": "[parameters('Codatahost_properties_typeProperties_userName')]"
+					},
+					"DitioBase_properties_typeProperties_url": {
+						"value": "[parameters('DitioBase_properties_typeProperties_url')]"
+					},
+					"DitioConnectionAPI_properties_typeProperties_url": {
+						"value": "[parameters('DitioConnectionAPI_properties_typeProperties_url')]"
+					},
+					"DitioMachine_properties_typeProperties_url": {
+						"value": "[parameters('DitioMachine_properties_typeProperties_url')]"
+					},
+					"DitioMassConnecitonAPI_properties_typeProperties_url": {
+						"value": "[parameters('DitioMassConnecitonAPI_properties_typeProperties_url')]"
+					},
+					"DitioV3_properties_typeProperties_url": {
+						"value": "[parameters('DitioV3_properties_typeProperties_url')]"
+					},
+					"FtpServerTunnel_properties_typeProperties_host": {
+						"value": "[parameters('FtpServerTunnel_properties_typeProperties_host')]"
+					},
+					"FtpServerTunnel_properties_typeProperties_userName": {
+						"value": "[parameters('FtpServerTunnel_properties_typeProperties_userName')]"
+					},
+					"HttpVolvoTruck_properties_typeProperties_url": {
+						"value": "[parameters('HttpVolvoTruck_properties_typeProperties_url')]"
+					},
+					"HttpVolvoTruck_properties_typeProperties_userName": {
+						"value": "[parameters('HttpVolvoTruck_properties_typeProperties_userName')]"
+					},
+					"Pimcore_properties_typeProperties_url": {
+						"value": "[parameters('Pimcore_properties_typeProperties_url')]"
+					},
+					"PimcoreRest_properties_typeProperties_url": {
+						"value": "[parameters('PimcoreRest_properties_typeProperties_url')]"
+					},
+					"Rest_Caterpillar_properties_typeProperties_url": {
+						"value": "[parameters('Rest_Caterpillar_properties_typeProperties_url')]"
+					},
+					"RisaIP_properties_typeProperties_url": {
+						"value": "[parameters('RisaIP_properties_typeProperties_url')]"
+					},
+					"Visma_properties_typeProperties_url": {
+						"value": "[parameters('Visma_properties_typeProperties_url')]"
+					},
+					"VismaAPI_properties_typeProperties_url": {
+						"value": "[parameters('VismaAPI_properties_typeProperties_url')]"
+					},
+					"VismaBase_properties_typeProperties_url": {
+						"value": "[parameters('VismaBase_properties_typeProperties_url')]"
+					},
+					"Vismanet_properties_typeProperties_url": {
+						"value": "[parameters('Vismanet_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "WilmaDeveloper_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"connectionRisaDitio_connectionString": {
+						"value": "[parameters('connectionRisaDitio_connectionString')]"
+					},
+					"VolvoCE_properties_typeProperties_url": {
+						"value": "[parameters('VolvoCE_properties_typeProperties_url')]"
+					},
+					"VolvoTrucks_properties_typeProperties_url": {
+						"value": "[parameters('VolvoTrucks_properties_typeProperties_url')]"
+					},
+					"Volvo_CE_API_properties_typeProperties_url": {
+						"value": "[parameters('Volvo_CE_API_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'WilmaDeveloper_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "WilmaDeveloper_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'WilmaDeveloper_ArmTemplate_1')]"
+			]
+		}
+	]
+}

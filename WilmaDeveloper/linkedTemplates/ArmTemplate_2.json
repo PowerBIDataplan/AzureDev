@@ -1,0 +1,462 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "WilmaDeveloper"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Barcodes')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ExtraTest",
+								"type": "DatasetReference"
+							},
+							"name": "ExtraTest"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "PimcoreDB",
+								"type": "DatasetReference"
+							},
+							"name": "sinkPimcore"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SecondaryBarcode"
+						},
+						{
+							"name": "AlterRow"
+						}
+					],
+					"script": "source(output(\n\t\tItemSKU as string,\n\t\tPimcoreID as string,\n\t\tDescription as string,\n\t\tItemOfferPrice as double,\n\t\tItemVAT as string,\n\t\tItemCostPrice as double,\n\t\tItemSalePrice as double,\n\t\tEnableWebShop as string,\n\t\tPrimaryBarcode as string,\n\t\tSecondaryBarcode as string,\n\t\tVismaModificationDate as string,\n\t\tPIMmodificationDate as string,\n\t\tUpdateDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> ExtraTest\nExtraTest derive(SecondaryBarcode_New = replace( replace(SecondaryBarcode, '[{\"Barcode\":\"', ''), '\"}]', ''),\n\t\tToday = toString(currentUTC()),\n\t\tPIMcore_New = toInteger(PimcoreID),\n\t\tNewSalePrice = toString(ItemSalePrice)) ~> SecondaryBarcode\nSecondaryBarcode alterRow(upsertIf(true())) ~> AlterRow\nAlterRow sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tID as integer,\n\t\tItemSKU as string,\n\t\tCost as string,\n\t\tBarCodePrincipal as string,\n\t\tBarCodeSecondary as string,\n\t\tBarCodePrin_Update as string,\n\t\tBarCodeSec_Update as string,\n\t\tSupplier as string,\n\t\tUpdated as string,\n\t\tItemInStock as string,\n\t\tItemSalePrice as string\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['ItemSKU'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tID = PimcoreID,\n\t\tItemSKU,\n\t\tBarCodePrincipal = PrimaryBarcode,\n\t\tBarCodeSecondary = SecondaryBarcode_New,\n\t\tUpdated = Today,\n\t\tItemSalePrice = NewSalePrice\n\t)) ~> sinkPimcore"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ItemInStock')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "UpdateItemInStock",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Barcodes",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ExtraTest": {},
+									"sinkPimcore": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Barcodes')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PopulateFromPimBarcodes')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flowBarcodes",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Barcodes",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ExtraTest": {},
+									"sinkPimcore": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"TotalCount": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Barcodes')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PopulateFromVisma_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "VismaPages",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "NumberItems",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Barcodes",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ExtraTest": {},
+									"sinkPimcore": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Lookup total pages",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "VismaPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT * FROM dbo.Pages  WHERE TableName LIKE 'VismaExtraTest';",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "PagesPimcore",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Set TotalPages",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Lookup total pages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "TotalPages",
+							"value": {
+								"value": "@string(activity('Lookup total pages').output.firstRow.TotalPages)",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "Set TotalPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greaterOrEquals(int(variables('Page')), int(variables('TotalPages')))",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "VismaInventory",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "RestSource",
+											"httpRequestTimeout": "00:03:00",
+											"requestInterval": "00.00:00:00.002",
+											"requestMethod": "GET",
+											"additionalHeaders": {
+												"ipp-application-type": "Visma.net Financials",
+												"ipp-company-id": "3464226",
+												"Authorization": "Bearer c5b7d8ba-4cf8-4312-a520-6709738cae9c"
+											},
+											"paginationRules": {
+												"supportRFC5988": "true"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink"
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"path": "$['inventoryNumber']"
+													},
+													"sink": {
+														"name": "ItemSKU",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['description']"
+													},
+													"sink": {
+														"name": "Description",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['lastCost']"
+													},
+													"sink": {
+														"name": "DefaultPrice",
+														"type": "Double"
+													}
+												},
+												{
+													"source": {
+														"path": "$['lastModifiedDateTime']"
+													},
+													"sink": {
+														"name": "modificationDate",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['crossReferences'][0]['alternateID']"
+													},
+													"sink": {
+														"name": "CrossReferenceAlternateID",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"path": "$['warehouseDetails'][0]['available']"
+													},
+													"sink": {
+														"name": "IteminStock",
+														"type": "String"
+													}
+												}
+											]
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "VismaInventory",
+											"type": "DatasetReference",
+											"parameters": {
+												"Page": {
+													"value": "@variables('Page')",
+													"type": "Expression"
+												},
+												"NumberItem": {
+													"value": "@variables('NumberItems')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "VismaDB",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								},
+								{
+									"name": "Set variable Help",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "VismaInventory",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Help",
+										"value": {
+											"value": "@string(add(int(variables('Page')),1))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set variable Page",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Set variable Help",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Page",
+										"value": {
+											"value": "@variables('Help')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "NumberItems",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "NumberItems",
+							"value": "100"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"TotalPages": {
+						"type": "String"
+					},
+					"Page": {
+						"type": "String",
+						"defaultValue": "50"
+					},
+					"Help": {
+						"type": "String"
+					},
+					"NumberItems": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Barcodes')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,99 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "WilmaDeveloper"
+		},
+		"AzureBlobStorageTunnels_connectionString": {
+			"value": ""
+		},
+		"Codatahost_password": {
+			"value": ""
+		},
+		"Ditio_connectionString": {
+			"value": ""
+		},
+		"ExtraLeker_connectionString": {
+			"value": ""
+		},
+		"FtpServerTunnel_password": {
+			"value": ""
+		},
+		"HttpVolvoTruck_password": {
+			"value": ""
+		},
+		"SQLMachine_connectionString": {
+			"value": ""
+		},
+		"connectionRisaDitio_connectionString": {
+			"value": ""
+		},
+		"Codatahost_properties_typeProperties_url": {
+			"value": "https://api.codatahost.com/mons2/v1/cmp/330/"
+		},
+		"Codatahost_properties_typeProperties_userName": {
+			"value": "lars.nygard@risa.no"
+		},
+		"DitioBase_properties_typeProperties_url": {
+			"value": "https://ditio-ids-we.azurewebsites.net/connect/"
+		},
+		"DitioConnectionAPI_properties_typeProperties_url": {
+			"value": "https://ditio-api-v3.azurewebsites.net/api/reporting/external-report"
+		},
+		"DitioMachine_properties_typeProperties_url": {
+			"value": "https://ditio-api-v3.azurewebsites.net/api/machine?userMachineOnly=false&activeOnly=false"
+		},
+		"DitioMassConnecitonAPI_properties_typeProperties_url": {
+			"value": "https://ditio-report-api.azurewebsites.net/api/mass-transport-report/mass-transport-report"
+		},
+		"DitioV3_properties_typeProperties_url": {
+			"value": "https://ditio-api-v3.azurewebsites.net/api/"
+		},
+		"FtpServerTunnel_properties_typeProperties_host": {
+			"value": "10.0.0.52"
+		},
+		"FtpServerTunnel_properties_typeProperties_userName": {
+			"value": "tunnel01"
+		},
+		"HttpVolvoTruck_properties_typeProperties_url": {
+			"value": "https://api.volvotrucks.com/"
+		},
+		"HttpVolvoTruck_properties_typeProperties_userName": {
+			"value": "24A0F7A8CA"
+		},
+		"Pimcore_properties_typeProperties_url": {
+			"value": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532"
+		},
+		"PimcoreRest_properties_typeProperties_url": {
+			"value": "https://pim.extra-leker.no/pimcore-graphql-webservices/products?apikey=c863868b01b24112638c18a2f5380532"
+		},
+		"Rest_Caterpillar_properties_typeProperties_url": {
+			"value": "https://services.cat.com/telematics/iso15143/fleet/"
+		},
+		"RisaIP_properties_typeProperties_url": {
+			"value": "https://app.qatip.no"
+		},
+		"Visma_properties_typeProperties_url": {
+			"value": "https://integration.visma.net/API/controller/api/v1"
+		},
+		"VismaAPI_properties_typeProperties_url": {
+			"value": "https://integration.visma.net/API/controller/api/v1/inventory?pageNumber=1&pageSize=1"
+		},
+		"VismaBase_properties_typeProperties_url": {
+			"value": "https://integration.visma.net/API/controller/api/v1/"
+		},
+		"Vismanet_properties_typeProperties_url": {
+			"value": "https://integration.visma.net/API/controller/api/v1/"
+		},
+		"VolvoCE_properties_typeProperties_url": {
+			"value": "https://api.volvo.com/vce/"
+		},
+		"VolvoTrucks_properties_typeProperties_url": {
+			"value": "https://api.volvotrucks.com"
+		},
+		"Volvo_CE_API_properties_typeProperties_url": {
+			"value": "https://api.volvo.com/vce/"
+		}
+	}
+}

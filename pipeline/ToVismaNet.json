@@ -1,0 +1,198 @@
+{
+	"name": "ToVismaNet",
+	"properties": {
+		"activities": [
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "SetPages",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(int(variables('Current Page ')),int(variables('Pages')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "VismaExtraTest",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('SELECT TOP(5) ItemSKU, Description, IteminStock, LastCostPrice, AverageCostPrice, RowNum FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY ItemSKU) As RowNum FROM [dbo].[VismaExtraTest]) AS FullTable WHERE RowNum >',variables('Limit') )",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ExtraTest",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "ForEach1",
+							"type": "ForEach",
+							"dependsOn": [
+								{
+									"activity": "VismaExtraTest",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('VismaExtraTest').output.value",
+									"type": "Expression"
+								},
+								"activities": [
+									{
+										"name": "SetTest",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Test",
+											"value": {
+												"value": "@item().ItemSKU",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "IncrementPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "ForEach1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PageIncrement",
+								"value": {
+									"value": "@string(add(int(variables('Current Page ')),1))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetNewPage",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "IncrementPage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Current Page ",
+								"value": {
+									"value": "@variables('PageIncrement')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "7.00:00:00"
+				}
+			},
+			{
+				"name": "Total",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT count(*) AS TOTAL \nFROM dbo.VismaExtraTest ",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ExtraTest",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "SetPages",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Total",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Pages",
+					"value": {
+						"value": "@string(div(activity('Total').output.firstRow.TOTAL,5000))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Limit": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"Pages": {
+				"type": "String"
+			},
+			"Current Page ": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"Test": {
+				"type": "String"
+			},
+			"PageIncrement": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

@@ -98,7 +98,7 @@
 							"typeProperties": {
 								"variableName": "PageIncrement",
 								"value": {
-									"value": "@string(add(int(variables('Current Page ')),1))",
+									"value": "@string(add(int(variables('CurrentPage')),1))",
 									"type": "Expression"
 								}
 							}

@@ -1,0 +1,144 @@
+{
+	"name": "test3",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.VismaExtraTest",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "PostInventory",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "SetItemSKU",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "SetItemSalesPrice",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "SetItemName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "SetItemVat",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": "https://integration.visma.net/API/controller/api/v1/inventory",
+								"method": "POST",
+								"headers": {
+									"ipp-application-type": "Visma.net Financials",
+									"ipp-company-id": "3469426",
+									"Authorization": "Bearer c5b7d8ba-4cf8-4312-a520-6709738cae9c"
+								},
+								"body": {
+									"value": "@concat('{\"inventoryNumber\": { \"value\": \"',variables('ItemSku'),'\"},  \"status\": {\"value\": \"Active\"  }, \"type\": {    \"value\": \"FinishedGoodItem\"  },  \"description\": {    \"value\": \"',variables('ItemName'),'\"  },  \"itemClass\": {    \"value\": \"Høy\" },  \"postingClass\": {    \"value\": ',variables('ItemVat'),'\"  },  \"vatCode\": {    \"value\": \"0\"  },  \"baseUnit\": {    \"value\": \"STK\"  },  \"salesUnit\": {    \"value\": \"STK\"  },  \"purchaseUnit\": {    \"value\": \"STK\"  },  \"defaultPrice\": {    \"value\": \"',variables('ItemSalesPrice'),'\"  }}')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetItemSKU",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ItemSku",
+								"value": {
+									"value": "@item().ItemSKU",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetItemSalesPrice",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ItemSalesPrice",
+								"value": {
+									"value": "@item().ItemSalePrice",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetItemName",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ItemName",
+								"value": {
+									"value": "@item().Description",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "SetItemVat",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ItemVat",
+								"value": {
+									"value": "@item().itemVAT",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"VismaExtraTest": {
+				"type": "array"
+			}
+		},
+		"variables": {
+			"ItemSku": {
+				"type": "String"
+			},
+			"ItemName": {
+				"type": "String"
+			},
+			"ItemVat": {
+				"type": "String"
+			},
+			"ItemSalesPrice": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}

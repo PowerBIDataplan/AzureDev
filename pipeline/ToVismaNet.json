@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(int(variables('Current Page ')),int(variables('Pages')))",
+						"value": "@greater(int(variables('CurrentPage')),int(variables('Pages')))",
 						"type": "Expression"
 					},
 					"activities": [
@@ -116,7 +116,7 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "Current Page ",
+								"variableName": "CurrentPage",
 								"value": {
 									"value": "@variables('PageIncrement')",
 									"type": "Expression"
@@ -182,7 +182,7 @@
 			"Pages": {
 				"type": "String"
 			},
-			"Current Page ": {
+			"CurrentPage": {
 				"type": "String",
 				"defaultValue": "1"
 			},

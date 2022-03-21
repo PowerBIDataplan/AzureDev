@@ -1392,7 +1392,7 @@
 										"source": {
 											"type": "AzureSqlSource",
 											"sqlReaderQuery": {
-												"value": "@concat('SELECT TOP(5) ItemSKU, Description, IteminStock, LastCostPrice, AverageCostPrice, RowNum FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY ItemSKU) As RowNum FROM [dbo].[ExtraTest]) AS FullTable WHERE RowNum >',variables('Limit') )",
+												"value": "@concat('SELECT TOP(5) ItemSKU, Description, ItemVAT, ItemSalePrice, RowNum FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY ItemSKU) As RowNum FROM [dbo].[ExtraTest]) AS FullTable WHERE RowNum >',variables('Limit') )",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",

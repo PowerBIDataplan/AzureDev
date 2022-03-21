@@ -23,14 +23,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "VismaPages",
-						"type": "DataFlowReference",
-						"parameters": {
-							"ItemNumber": {
-								"value": "'@{variables('NumberItems')}'",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "Barcodes",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,

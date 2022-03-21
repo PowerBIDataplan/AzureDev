@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "ItemInStock",
+						"referenceName": "Barcodes",
 						"type": "DataFlowReference"
 					},
 					"compute": {

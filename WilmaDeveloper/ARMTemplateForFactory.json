@@ -1353,6 +1353,251 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Test 2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Until1",
+						"type": "Until",
+						"dependsOn": [
+							{
+								"activity": "SetPages",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@greater(int(variables('CurrentPage')),int(variables('Pages')))",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "VismaExtraTest",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT TOP(5) ItemSKU, Description, IteminStock, LastCostPrice, AverageCostPrice, RowNum FROM (SELECT *,ROW_NUMBER() OVER (ORDER BY ItemSKU) As RowNum FROM [dbo].[ExtraTest]) AS FullTable WHERE RowNum >',variables('Limit') )",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "ExtraTest",
+											"type": "DatasetReference",
+											"parameters": {}
+										},
+										"firstRowOnly": false
+									}
+								},
+								{
+									"name": "IncrementPage",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Execute Pipeline1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "PageIncrement",
+										"value": {
+											"value": "@string(add(int(variables('CurrentPage')),1))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "SetNewPage",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "IncrementPage",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "CurrentPage",
+										"value": {
+											"value": "@variables('PageIncrement')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Execute Pipeline1",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "VismaExtraTest",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "test3",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"VismaExtraTest": {
+												"value": "@activity('VismaExtraTest').output.value",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "IncrementLimit",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Execute Pipeline1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "LimitIncrement",
+										"value": {
+											"value": "@string(add(int(variables('Limit')),5))",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "NewLimit",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "IncrementLimit",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "Limit",
+										"value": {
+											"value": "@variables('LimitIncrement')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"timeout": "7.00:00:00"
+						}
+					},
+					{
+						"name": "Total",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT count(*) AS TOTAL \nFROM dbo.ExtraTest ",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ExtraTest",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": true
+						}
+					},
+					{
+						"name": "SetPages",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Total",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Pages",
+							"value": {
+								"value": "@string(div(activity('Total').output.firstRow.TOTAL,5000))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"Pages": {
+						"type": "String"
+					},
+					"Limit": {
+						"type": "String",
+						"defaultValue": "0"
+					},
+					"CurrentPage": {
+						"type": "String",
+						"defaultValue": "1"
+					},
+					"PageIncrement": {
+						"type": "String"
+					},
+					"Test": {
+						"type": "String"
+					},
+					"LimitIncrement": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ExtraTest')]",
+				"[concat(variables('factoryId'), '/pipelines/test3')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ToVismaNet')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1372,7 +1617,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"expression": {
-								"value": "@greater(int(variables('Current Page ')),int(variables('Pages')))",
+								"value": "@greater(int(variables('CurrentPage')),int(variables('Pages')))",
 								"type": "Expression"
 							},
 							"activities": [
@@ -1455,7 +1700,7 @@
 									"typeProperties": {
 										"variableName": "PageIncrement",
 										"value": {
-											"value": "@string(add(int(variables('Current Page ')),1))",
+											"value": "@string(add(int(variables('CurrentPage')),1))",
 											"type": "Expression"
 										}
 									}
@@ -1473,7 +1718,7 @@
 									],
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "Current Page ",
+										"variableName": "CurrentPage",
 										"value": {
 											"value": "@variables('PageIncrement')",
 											"type": "Expression"
@@ -1544,7 +1789,7 @@
 					"Pages": {
 						"type": "String"
 					},
-					"Current Page ": {
+					"CurrentPage": {
 						"type": "String",
 						"defaultValue": "1"
 					},
@@ -1562,56 +1807,126 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ToVismaNet_copy1')]",
+			"name": "[concat(parameters('factoryName'), '/test3')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Total",
-						"type": "Lookup",
+						"name": "ForEach1",
+						"type": "ForEach",
 						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderQuery": "SELECT count(*) AS TOTAL \nFROM dbo.VismaExtraTest ",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "ExtraTest",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": true
-						}
-					},
-					{
-						"name": "SetPages",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "Total",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "Pages",
-							"value": {
-								"value": "@string(div(activity('Total').output.firstRow.TOTAL,5000))",
+							"items": {
+								"value": "@pipeline().parameters.VismaExtraTest",
 								"type": "Expression"
-							}
+							},
+							"activities": [
+								{
+									"name": "PostInventory",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "SetItemSKU",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "SetItemSalesPrice",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "SetItemName",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "SetItemVat",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://integration.visma.net/API/controller/api/v1/inventory",
+										"method": "POST",
+										"headers": {
+											"ipp-application-type": "Visma.net Financials",
+											"ipp-company-id": "3469426",
+											"Authorization": "Bearer c5b7d8ba-4cf8-4312-a520-6709738cae9c"
+										},
+										"body": {
+											"value": "@concat('{\"inventoryNumber\": { \"value\": \"',variables('ItemSku'),'\"},  \"status\": {\"value\": \"Active\"  }, \"type\": {    \"value\": \"FinishedGoodItem\"  },  \"description\": {    \"value\": \"',variables('ItemName'),'\"  },  \"itemClass\": {    \"value\": \"Høy\" },  \"postingClass\": {    \"value\": ',variables('ItemVat'),'\"  },  \"vatCode\": {    \"value\": \"0\"  },  \"baseUnit\": {    \"value\": \"STK\"  },  \"salesUnit\": {    \"value\": \"STK\"  },  \"purchaseUnit\": {    \"value\": \"STK\"  },  \"defaultPrice\": {    \"value\": \"',variables('ItemSalesPrice'),'\"  }}')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "SetItemSKU",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "ItemSku",
+										"value": {
+											"value": "@item().ItemSKU",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "SetItemSalesPrice",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "ItemSalesPrice",
+										"value": {
+											"value": "@item().ItemSalePrice",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "SetItemName",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "ItemName",
+										"value": {
+											"value": "@item().Description",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "SetItemVat",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "ItemVat",
+										"value": {
+											"value": "@item().itemVAT",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					}
 				],
@@ -1619,30 +1934,28 @@
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
+				"parameters": {
+					"VismaExtraTest": {
+						"type": "array"
+					}
+				},
 				"variables": {
-					"Limit": {
-						"type": "String",
-						"defaultValue": "0"
-					},
-					"Pages": {
+					"ItemSku": {
 						"type": "String"
 					},
-					"Current Page ": {
-						"type": "String",
-						"defaultValue": "1"
-					},
-					"Test": {
+					"ItemName": {
 						"type": "String"
 					},
-					"PageIncrement": {
+					"ItemVat": {
+						"type": "String"
+					},
+					"ItemSalesPrice": {
 						"type": "String"
 					}
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ExtraTest')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/BulkPostInventory')]",

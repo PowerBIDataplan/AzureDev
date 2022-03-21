@@ -228,9 +228,6 @@
 					},
 					"VismaBase_properties_typeProperties_url": {
 						"value": "[parameters('VismaBase_properties_typeProperties_url')]"
-					},
-					"Vismanet_properties_typeProperties_url": {
-						"value": "[parameters('Vismanet_properties_typeProperties_url')]"
 					}
 				}
 			},
@@ -252,6 +249,9 @@
 					},
 					"connectionRisaDitio_connectionString": {
 						"value": "[parameters('connectionRisaDitio_connectionString')]"
+					},
+					"Vismanet_properties_typeProperties_url": {
+						"value": "[parameters('Vismanet_properties_typeProperties_url')]"
 					},
 					"VolvoCE_properties_typeProperties_url": {
 						"value": "[parameters('VolvoCE_properties_typeProperties_url')]"
